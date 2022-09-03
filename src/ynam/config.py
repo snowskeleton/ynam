@@ -29,13 +29,14 @@ def update(key, value):
 
 
 def valueOf(key):
+    secrets = _updateSecrets()
     if key in keys:
         return secrets[f'{key}']
     return '--no value found--'
 
 
 def all():
-    return secrets
+    return _updateSecrets()
 
 
 def newfile():
