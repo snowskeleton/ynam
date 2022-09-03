@@ -1,15 +1,15 @@
 from datetime import datetime, timedelta
+import os
 import mintapi
-import json
+from config import valueOf
 
 
 def allTransactions():
     mint = mintapi.Mint(
-        Secrets.username(),
-        Secrets.password(),
-
+        valueOf('username'),
+        valueOf('password'),
         headless=True,
-        session_path='/Users/snow/.mintapi/session',
+        session_path=os.path.expanduser('~') + '/.mintapi/session',
         wait_for_sync=True,
         wait_for_sync_timeout=300,
     )
@@ -29,43 +29,14 @@ def yesterdaysTransactions(transactions) -> dict:
     return ans
 
 
-class Secrets():
-    with open('secrets.json') as f:
-        secrets = json.load(f)
-
-    @classmethod
-    def budget_id(self):
-        return self.secrets['budget_id']
-
-    @classmethod
-    def api_key(self):
-        return self.secrets['api_key']
-
-    @classmethod
-    def username(self):
-        return self.secrets['username']
-
-    @classmethod
-    def password(self):
-        return self.secrets['password']
-
-    @classmethod
-    def account_id(self):
-        return self.secrets['account_id']
-
-
 class YNABTransaction():
     def __init__(self, transaction):
-        self.id = transaction["id"]
-        self.cleared = False
-        self.approved = False
-        self.flag_color = None
-        self.account_id = Secrets.account_id()
+        self.account_id = valueOf('account_id')
         self.date = transaction['date']
         self.amount = int(transaction['amount'] * 1000)
         self.payee_name = transaction['description']
 
-    def __dict__(self):
+    def __data__(self):
         return {
             "transaction": {
                 "date": f"{self.date}",
