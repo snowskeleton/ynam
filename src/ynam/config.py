@@ -1,6 +1,7 @@
 import json
 import os
 
+
 secretsPath = os.path.expanduser("~") + "/.ynam/secrets.json"
 keys = [
     'api_key',
@@ -9,11 +10,15 @@ keys = [
     'account_id',
     'budget_id',
 ]
-with open(secretsPath, 'r+') as file:
-    secrets = json.load(file)
+
+
+def _updateSecrets():
+    with open(secretsPath, 'r+') as file:
+        return json.load(file)
 
 
 def update(key, value):
+    secrets = _updateSecrets()
     # don't overwrite non-blank value with blank value
     # if no value at all, add blank value.
     if value != '' or not secrets[key]:
