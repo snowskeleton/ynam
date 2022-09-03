@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 
 
 secretsPath = os.path.expanduser("~") + "/.ynam/secrets.json"
@@ -10,6 +11,8 @@ keys = [
     'account_id',
     'budget_id',
 ]
+file = Path(secretsPath)
+file.touch(exist_ok=True)
 
 
 def _updateSecrets():
