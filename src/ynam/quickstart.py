@@ -1,5 +1,20 @@
 from getpass import getpass
-from config import update, secretsPath
+from config import update
+
+
+def safeInput(cap):
+  """
+  guarantees int from user input
+  """
+  while True:
+    ans = input(f'Enter 0–{cap}: ')
+
+    try:
+      if int(ans) <= cap:
+        return int(ans)
+    except:
+      # failed to convert user input to integer. start over
+      continue
 
 
 def usersChoice(items):
@@ -9,15 +24,15 @@ def usersChoice(items):
   else:
     for item in items:
       print(items.index(item), item['name'])
-    index = int(input(f'Enter 0–{len(items) - 1}: '))
+    index = int(safeInput(len(items) - 1))
 
-    print('selected: ', items[index]['name'])
+    print('selected:', items[index]['name'])
     return items[index]
 
 
 def run():
-  update('api_key', input('API key: '))
-  update('username', input('Mint username: '))
+  update('api_key', input('API key: ').strip())
+  update('username', input('Mint username: ').strip())
   update('password', getpass('Mint password: '))
 
   # we can't import from api until we have the api_key

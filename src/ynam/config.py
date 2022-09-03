@@ -1,6 +1,5 @@
 import json
 import os
-from pathlib import Path
 
 
 secretsPath = os.path.expanduser("~/.ynamrc")
@@ -28,7 +27,7 @@ def update(key, value):
     if value != '' or not secrets[key]:
         secrets[key] = value
         with open(secretsPath, 'w+') as file:
-            file.write(json.dumps(secrets))
+            file.write(json.dumps(secrets, indent=2))
     return secrets
 
 
