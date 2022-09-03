@@ -1,6 +1,5 @@
 from getpass import getpass
 from config import update, secretsPath
-from api import getBudgets, getAccounts
 
 
 def usersChoice(items):
@@ -20,6 +19,9 @@ def run():
   update('api_key', input('API key: '))
   update('username', input('Mint username: '))
   update('password', getpass('Mint password: '))
+
+  # we can't import from api until we have the api_key
+  from api import getBudgets, getAccounts
   update('budget_id', usersChoice(getBudgets())['id'])
   update('account_id', usersChoice(getAccounts())['id'])
 

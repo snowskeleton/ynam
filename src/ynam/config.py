@@ -11,12 +11,15 @@ keys = [
     'account_id',
     'budget_id',
 ]
-file = Path(secretsPath).mkdir(parents=True, exist_ok=True)
+file = Path(os.path.expanduser('~/.ynam')).mkdir(parents=True, exist_ok=True)
 
 
 def _updateSecrets():
-    with open(secretsPath, 'a+') as file:
+    # try:
+    with open(secretsPath, 'r+') as file:
         return json.load(file)
+    # except:
+    #     return {}
 
 
 def update(key, value):
@@ -32,9 +35,7 @@ def update(key, value):
 
 def valueOf(key):
     secrets = _updateSecrets()
-    if key in keys:
-        return secrets[f'{key}']
-    return '--no value found--'
+    return secrets[key] if secrets[key] else ''
 
 
 def all():
