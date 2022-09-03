@@ -1,6 +1,7 @@
 from getpass import getpass
-from config import update
+from config import update, secretsPath
 from api import getBudgets, getAccounts
+from pathlib import Path
 
 
 def usersChoice(items):
@@ -17,6 +18,8 @@ def usersChoice(items):
 
 
 def run():
+  file = Path(secretsPath)
+  file.touch(exist_ok=True)
   update('api_key', input('API key: '))
   update('username', input('Mint username: '))
   update('password', getpass('Mint password: '))
