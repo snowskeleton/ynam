@@ -11,8 +11,7 @@ keys = [
     'account_id',
     'budget_id',
 ]
-file = Path(secretsPath)
-file.touch(exist_ok=True)
+file = Path(secretsPath).mkdir(parents=True, exist_ok=True)
 
 
 def _updateSecrets():
