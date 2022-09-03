@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import requests
 import os
 import mintapi
 from config import valueOf
@@ -45,3 +46,16 @@ class YNABTransaction():
                 "payee_name": f"{self.payee_name}",
             }
         }
+
+
+class SendRequest():
+  uri = 'https://api.youneedabudget.com/v1/'
+  defaultHeaders = {'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {valueOf("api_key")}'}
+
+  def post(self, url, **kwargs):
+    return requests.post(
+        f'{self.uri}{url}',
+        headers=self.defaultHeaders,
+        **kwargs
+    )
