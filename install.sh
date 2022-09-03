@@ -18,7 +18,7 @@ sudo rm -rf ${DEST}
 
 if [[ $remove -ne 1 ]]; then
   sudo cp -r $(pwd) ${LIB}
-  sudo ln -s ${LIB}/src/main.py ${DEST}
+  sudo ln -s ${LIB}/src/ynam/main.py ${DEST}
   sudo chmod 755 ${DEST}
   echo Finished
 fi
