@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 
-secretsPath = os.path.expanduser("~") + "/.ynam/secrets.json"
+secretsPath = os.path.expanduser("~/.ynamrc")
 keys = [
     'api_key',
     'username',
@@ -11,7 +11,6 @@ keys = [
     'account_id',
     'budget_id',
 ]
-file = Path(os.path.expanduser('~/.ynam')).mkdir(parents=True, exist_ok=True)
 
 
 def _updateSecrets():
