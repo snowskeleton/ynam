@@ -13,7 +13,7 @@ keys = [
 
 
 def _updateSecrets():
-    with open(secretsPath, 'r+') as file:
+    with open(secretsPath, 'a+') as file:
         return json.load(file)
 
 
