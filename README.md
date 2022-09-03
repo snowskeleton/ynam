@@ -6,7 +6,7 @@ Ensure your have a recent version of Python installed.
 
 Run 
 
-``` curl -o- https://github.com/snowskeleton/ynam/quick_install.sh | bash```
+``` curl -o- https://github.com/snowskeleton/ynam/remote_install.sh | bash```
 
 for an automated install, or
 
