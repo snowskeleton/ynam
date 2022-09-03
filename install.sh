@@ -12,11 +12,9 @@ while getopts r flag; do
   update=1
 done
 
- if [[ $update -eq 1 ]]; then
-  # wipe old install
-   sudo rm -rf ${LIB}
-   sudo rm -rf ${DEST}
- fi
+# wipe old install
+sudo rm -rf ${LIB}
+sudo rm -rf ${DEST}
 
 if [[ $remove -ne 1 ]]; then
   sudo cp -r $(pwd) ${LIB}
