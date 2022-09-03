@@ -59,3 +59,10 @@ class SendRequest():
         headers=self.defaultHeaders,
         **kwargs
     )
+
+  def get(self, url, **kwargs):
+    return requests.get(
+        f'{self.uri}{url}',
+        headers=self.defaultHeaders,
+        **kwargs
+    )

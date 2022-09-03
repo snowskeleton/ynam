@@ -15,11 +15,11 @@ file = Path(os.path.expanduser('~/.ynam')).mkdir(parents=True, exist_ok=True)
 
 
 def _updateSecrets():
-    # try:
-    with open(secretsPath, 'r+') as file:
-        return json.load(file)
-    # except:
-    #     return {}
+    try:
+        with open(secretsPath, 'r+') as file:
+            return json.load(file)
+    except:
+        return {}
 
 
 def update(key, value):
