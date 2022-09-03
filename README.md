@@ -4,11 +4,11 @@ The basic idea of YouNeedAMint is to set up a Mint account linked to your Apple 
 # Installation
 Ensure your have a recent version of Python installed.
 
-Run 
+For an automated install, run 
 
-``` curl -o- https://github.com/snowskeleton/ynam/remote_install.sh | bash```
+```curl -l https://raw.githubusercontent.com/snowskeleton/ynam/master/remote_install.sh > i.sh && bash i.sh```
 
-for an automated install, or
+Or manually like:
 
 ```git clone https://github.com/snowskeleton/ynam.git```
 
