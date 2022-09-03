@@ -28,7 +28,7 @@ def getBudgets():
     """
     Return list of budgets
     """
-    result = SendRequest.get('/budgets')
+    result = SendRequest.get(url='/budgets')
 
     return decodeResult(result)['budgets']
 

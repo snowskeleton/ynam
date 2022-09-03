@@ -53,13 +53,15 @@ class SendRequest():
   defaultHeaders = {'Content-Type': 'application/json',
                     'Authorization': f'Bearer {valueOf("api_key")}'}
 
+  @classmethod
   def post(self, url, **kwargs):
-    return requests.post(
+      return requests.post(
         f'{self.uri}{url}',
         headers=self.defaultHeaders,
         **kwargs
     )
 
+  @classmethod
   def get(self, url, **kwargs):
     return requests.get(
         f'{self.uri}{url}',
