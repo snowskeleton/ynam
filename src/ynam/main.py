@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from utils import YNABTransaction, allTransactions
 from api import postTransaction
 
