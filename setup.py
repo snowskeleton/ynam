@@ -5,8 +5,8 @@ if sys.version_info < (3, 10, 0):
     raise RuntimeError("ynam requires Python 3.10.0+")
 
 setup(
-    name="YNAM (You Need a Mint)",
-    version='0.1.0',
+    name="ynam",
+    version='0.1.1',
     packages=find_packages("src"),
     package_dir={"": "src"},
     include_package_data=True,
@@ -16,5 +16,8 @@ setup(
     author="snowskeleton",
     author_email="snow@snowskeleton.net",
     keywords="ynab, mint",
-    long_description_content_type="text/markdown"
+    long_description_content_type="text/markdown",
+    install_requires=[
+        'mintapi',
+    ],
 )

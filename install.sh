@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-DEST="/usr/local/bin/ynam"
-LIB="/usr/lib/ynam"
+DEST="/opt/local/bin/ynam"
+LIB="/opt/local/bin/ynamlib"
 
 pip install -r requirements.txt
 

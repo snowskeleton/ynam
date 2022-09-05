@@ -33,7 +33,11 @@ def update(key, value):
 
 def valueOf(key):
     secrets = _updateSecrets()
-    return secrets[key] if secrets[key] else ''
+    try:
+        return secrets[key]
+    except KeyError:
+        update(key, '')
+        return valueOf(key)
 
 
 def all():

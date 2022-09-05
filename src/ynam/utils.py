@@ -40,31 +40,29 @@ class YNABTransaction():
     def __data__(self):
         return {
             "transaction": {
-                "date": f"{self.date}",
+                "date": self.date,
                 "amount": self.amount,
-                "account_id": f"{self.account_id}",
-                "payee_name": f"{self.payee_name}",
+                "account_id": self.account_id,
+                "payee_name": self.payee_name,
             }
         }
 
 
 class SendRequest():
-  uri = 'https://api.youneedabudget.com/v1/'
-  defaultHeaders = {'Content-Type': 'application/json',
-                    'Authorization': f'Bearer {valueOf("api_key")}'}
+    uri = 'https://api.youneedabudget.com/v1/'
+    defaultHeaders = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + valueOf("api_key")
+    }
 
-  @classmethod
-  def post(self, url, **kwargs):
-      return requests.post(
-        f'{self.uri}{url}',
-        headers=self.defaultHeaders,
-        **kwargs
-    )
+    @classmethod
+    def post(self, url, **kwargs):
+        return requests.post(self.uri + url,
+                             headers=self.defaultHeaders,
+                             **kwargs)
 
-  @classmethod
-  def get(self, url, **kwargs):
-    return requests.get(
-        f'{self.uri}{url}',
-        headers=self.defaultHeaders,
-        **kwargs
-    )
+    @classmethod
+    def get(self, url, **kwargs):
+        return requests.get(self.uri + url,
+                            headers=self.defaultHeaders,
+                            **kwargs)
