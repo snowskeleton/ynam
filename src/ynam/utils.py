@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import requests
 import os
 import mintapi
-from config import valueOf
+from .config import valueOf
 
 
 def allTransactions():
@@ -15,8 +15,7 @@ def allTransactions():
         wait_for_sync_timeout=300,
     )
     return yesterdaysTransactions(
-        [item['fiData'] for item in mint.get_transaction_data()]
-    )
+        [item['fiData'] for item in mint.get_transaction_data()])
 
 
 def yesterdaysTransactions(transactions) -> dict:
@@ -31,6 +30,7 @@ def yesterdaysTransactions(transactions) -> dict:
 
 
 class YNABTransaction():
+
     def __init__(self, transaction):
         self.account_id = valueOf('account_id')
         self.date = transaction['date']
@@ -46,23 +46,3 @@ class YNABTransaction():
                 "payee_name": self.payee_name,
             }
         }
-
-
-class SendRequest():
-    uri = 'https://api.youneedabudget.com/v1/'
-    defaultHeaders = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + valueOf("api_key")
-    }
-
-    @classmethod
-    def post(self, url, **kwargs):
-        return requests.post(self.uri + url,
-                             headers=self.defaultHeaders,
-                             **kwargs)
-
-    @classmethod
-    def get(self, url, **kwargs):
-        return requests.get(self.uri + url,
-                            headers=self.defaultHeaders,
-                            **kwargs)

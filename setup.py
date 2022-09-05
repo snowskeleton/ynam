@@ -1,8 +1,4 @@
-import sys
 from setuptools import setup, find_packages
-
-if sys.version_info < (3, 10, 0):
-    raise RuntimeError("ynam requires Python 3.10.0+")
 
 setup(
     name="ynam",

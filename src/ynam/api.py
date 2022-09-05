@@ -1,6 +1,5 @@
-from utils import SendRequest
-from config import valueOf
-import json
+import requests, json
+from .config import valueOf
 
 
 def postTransaction(transaction):
@@ -36,3 +35,23 @@ def getBudgets():
 def decodeResult(httpResponse) -> dict:
     answer = json.loads(httpResponse.content.decode('utf-8'))
     return answer['data'] if answer['data'] else answer
+
+
+class SendRequest():
+    uri = 'https://api.youneedabudget.com/v1/'
+    defaultHeaders = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + valueOf("api_key")
+    }
+
+    @classmethod
+    def post(self, url, **kwargs):
+        return requests.post(self.uri + url,
+                             headers=self.defaultHeaders,
+                             **kwargs)
+
+    @classmethod
+    def get(self, url, **kwargs):
+        return requests.get(self.uri + url,
+                            headers=self.defaultHeaders,
+                            **kwargs)
