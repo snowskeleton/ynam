@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-import requests
 import os
 import mintapi
 from .config import valueOf

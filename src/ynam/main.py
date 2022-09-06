@@ -3,7 +3,7 @@ from .api import postTransaction
 from .parser import parse
 
 
-def main():
+def run():
     parse()
 
     transactions = allTransactions()
@@ -13,4 +13,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()

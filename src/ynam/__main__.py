@@ -1,2 +1,3 @@
-from .main import main
-main()
+from .main import run
+
+run()
