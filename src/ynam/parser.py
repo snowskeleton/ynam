@@ -8,15 +8,19 @@ add = parser.add_argument
 add('-v, --version',
     action='version',
     version='snowskeleton/ynam ' + __version__)
-add('-q, --quickstart',
-    dest='q',
+add('-q',
+    '--quickstart',
+    dest='quickstart',
     action='store_true',
     help='A required integer positional argument')
-add('-x, -g, --graphics',
+add('-x',
+    '-g',
+    '--graphics',
     dest='headless',
     action='store_false',
     help='Flag to run non-headless. Used to input 2FA codes')
-add('-d, --days',
+add('-d',
+    '--days',
     dest='days',
     action='store',
     default='1',
@@ -41,4 +45,4 @@ args = parser.parse_args()
 
 
 def arg(key):
-    return args[key]
+    return vars(args)[key]

@@ -31,4 +31,4 @@ setup(name=read_from_file("__title__"),
       install_requires=[
           "mintapi",
       ],
-      entry_points={"console_scripts": ["ynam = ynam.main:run"]})
+      entry_points={"console_scripts": ["ynam = ynam.main:main"]})

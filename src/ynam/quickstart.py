@@ -36,7 +36,7 @@ def run():
     update('password', getpass('Mint password: '))
 
     # we can't import from api until we have the api_key
-    from .api import getBudgets, getAccounts
+    from .ynab_api import getBudgets, getAccounts
     update('budget_id', usersChoice(getBudgets())['id'])
     update('account_id', usersChoice(getAccounts())['id'])
 

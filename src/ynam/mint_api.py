@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime as t, timedelta as delta
 import mintapi
 from .config import valueOf
 from .parser import arg
 
 
-def getTransactions():
+def dispenseMints():
     mint = mintapi.Mint(
         valueOf('username'),
         valueOf('password'),
@@ -13,18 +13,15 @@ def getTransactions():
         wait_for_sync=True,
         wait_for_sync_timeout=300,
     )
-    return yesterdaysTransactions(
-        [item['fiData'] for item in mint.get_transaction_data()])
+    return _filter([item['fiData'] for item in mint.get_transaction_data()])
 
 
-def yesterdaysTransactions(transactions) -> dict:
+def _filter(transactions) -> dict:
     ans = []
     for item in transactions:
-        itemDate = datetime.strptime(item['date'], '%Y-%m-%d')
+        itemDate = t.strptime(item['date'], '%Y-%m-%d')
         itemDate = itemDate.strftime('%Y-%m-%d')
-        earlier = (datetime.today() -
-                   timedelta(days=int(arg('days')))).strftime('%Y-%m-%d')
-        if itemDate >= earlier:
+        then = (t.today() - delta(days=int(arg('days')))).strftime('%Y-%m-%d')
+        if itemDate >= then:
             ans.append(item)
     return ans
-

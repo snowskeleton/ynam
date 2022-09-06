@@ -18,7 +18,7 @@ def postTransaction(transaction):
         },
     )
 
-    return decodeResult(result)
+    return _decodeResult(result)
 
 
 def getAccounts():
@@ -27,7 +27,7 @@ def getAccounts():
     """
     result = SendRequest.get('/budgets/' + valueOf("budget_id") + '/accounts')
 
-    return decodeResult(result)['accounts']
+    return _decodeResult(result)['accounts']
 
 
 def getBudgets():
@@ -36,10 +36,10 @@ def getBudgets():
     """
     result = SendRequest.get(url='/budgets')
 
-    return decodeResult(result)['budgets']
+    return _decodeResult(result)['budgets']
 
 
-def decodeResult(httpResponse) -> dict:
+def _decodeResult(httpResponse) -> dict:
     answer = json.loads(httpResponse.content.decode('utf-8'))
     return answer['data'] if answer['data'] else answer
 

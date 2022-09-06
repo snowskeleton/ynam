@@ -1,56 +1,63 @@
 # Abstract
-The basic idea of YouNeedAMint is to set up a Mint account linked to your Apple Card to automatically import transactions, and then move those transactions from Mint to YNAB. For some reason, this is easier than simply linking directly from Apple Card to YNAB. If you're a developer from one or both of those companies, please make it happen.
+ynam is a commandline utility to import transactions from an Apple Card into YNAB.
+ynam achieves this by using an intermediary, namely Intuit's Mint, who happens to be able to import Apple Card transactions.
+For some reason, this is easier than simply linking an Apple Card directly to YNAB.
+If you're a developer from one or both of these companies, please make ynam obsolete.
 
 # Prerequisits
-**You must set up a new Intuit's Mint account** and link it to the desired bank accounts.
-If you use a Mint account with the same email address as any other Intuit product, regardless of whether you link them, you will be required to enter a 2FA code on every login, which makes automatiation more difficult.
-
-If you wish to use a Mint account with enforced 2FA, reference [this page](https://github.com/mintapi/mintapi#mfa-authentication-methods) for more details.
+ - [ New Intuit's Mint account with your Apple Card linked. ](#mint-mfa)
+ - [ Unique YNAB API key. ](#ynab-api-key)
 
 # Installation
 
 Available from PyPi:
+```
+pip install ynam
+```
+Or for the freshest version:
+```
+git clone https://github.com/snowskeleton/ynam.git
+cd ynam
+pip install --upgrade .
+```
+Then simply:
+```
+ynam --quickstart
+```
 
-```pip install ynam```
+Enter YNAB API key and Mint username and password when prompted.
+All will be saved to `~/.ynamrc` for later use by ynam.
 
+Hurray! Now we're ready to start importing transactions!
 
-Manual install:
+# Importing Transactions
+For a first time import, run ynam with the `--days` integer argument for however far back you care to.
+You may also need to pass the `--graphics` flag the first time ynam is run in order to enter an MFA code (sent to email by default).
+The first browser session is saved for subsequent runs, but if you're having issues, check [ here ](#mint-mfa).
 
-```git clone https://github.com/snowskeleton/ynam.git```
+The recommended longterm setup is to schedule a cron job for midnight that runs `ynam` (see [ example ](#crontab-example) below). 
+If you can think of some other way you'd like this to work, feel free to file an Issue or open a Pull Request.
 
-```cd ynam```
-
-```pip install --upgrade .```
-
-
-Then simply
-
-```ynam --quickstart```
-
-You will be asked for a YNAB API key (available from your YNAB settings), and your Mint username and password.
-After finishing the quickstart path, ynam will automatically pull all yesterday's transactions.
-
-At this point, check your YNAB budget to make sure the transactions imported as you expect, assign categories, make approvals, etc.
-
-If everything looks good, you're ready to setup the longterm task.
-If you just want a sample crontab line, here it is:
+# crontab example
+An example crontab entry that runs every day at 00:00, or midnight.
+You may need to specify `--config-file-path` and/or `--mint-session-path` in the command, or amend your path to ensure cron can find them.
 ```
 #m h dom mon dow command
-1 1 * * * ynam
+0 0 * * * ynam
 ```
+## Mint MFA
+If you use a Mint account with the same email address you use for any other Intuit product, you will be required to enter a 2FA code on every login.
+Use a unique email address and password to ensure you're not forced to use MFA for every login.
 
-Note that bank transactions have a granularity of one day, so the specific time of day will not affect the results returned.
+If you wish to use a Mint account with enforced 2FA, reference [this page](https://github.com/mintapi/mintapi#mfa-authentication-methods) for further instructions.
 
+## YNAB API key
+From [YNAB's documentation](https://api.youneedabudget.com/):
+ - Sign in to the YNAB web app and go to the "Account Settings" page and then to the "Developer Settings" page.
+ - Under the "Personal Access Tokens" section, click "New Token", enter your password and click "Generate" to get an access token.
 
-A cronjob or other similar scheduler is recommended.
-Currently ynam is optimized to be run once per day just after midnight.
-Future releases will include more flexability.
+Copy that access token and use it as your API key.
 
-
-Note that the first time running (```ynam quickstart```) is best performed on your local machine, i
-
-Credentials are stored at ```~/.ynamrc```.
-
-You can specify how far back ynam should reach for transactions with the ```--days``` flag, or ```-d```, which takes an integer.
-ynam will filter for all transactions on or before the day specified.
-For example, a value of 1 returns transations from today and yesterday; a value of 0 returns transactions only from today.
+## chromium crashes
+This happens a lot. Just try it again. It usually works after a few attempts.
+I'm still not sure how to handle when it crashes with cron

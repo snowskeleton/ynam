@@ -1,5 +1,5 @@
 import json
-from parser import arg
+from .parser import arg
 
 
 secretsPath = arg('config_file_path')
