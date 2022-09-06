@@ -8,7 +8,14 @@ def postTransaction(transaction):
     """
     result = SendRequest.post(
         f'/budgets/{valueOf("budget_id")}/transactions',
-        json=transaction.__data__(),
+        json={
+            "transaction": {
+                "date": transaction['date'],
+                "amount": transaction['amount'],
+                "account_id": transaction['account_id'],
+                "payee_name": transaction['payee_name'],
+            }
+        },
     )
 
     return decodeResult(result)
@@ -18,7 +25,7 @@ def getAccounts():
     """
     Return list of bank accounts/cards linked to default budget
     """
-    result = SendRequest.get(f'/budgets/{valueOf("budget_id")}/accounts')
+    result = SendRequest.get('/budgets/' + valueOf("budget_id") + '/accounts')
 
     return decodeResult(result)['accounts']
 

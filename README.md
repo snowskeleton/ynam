@@ -28,14 +28,29 @@ Then simply
 ```ynam --quickstart```
 
 You will be asked for a YNAB API key (available from your YNAB settings), and your Mint username and password.
-Credentials are stored at ```~/.ynamrc```.
-Be careful about who else has access to your machine, as currently they're stored in plain text
+After finishing the quickstart path, ynam will automatically pull all yesterday's transactions.
 
-After finishing the quickstart path, ynam will automatically pull the latest days transactions.
-Subsequent invocations are as simple as ```ynam```.
+At this point, check your YNAB budget to make sure the transactions imported as you expect, assign categories, make approvals, etc.
+
+If everything looks good, you're ready to setup the longterm task.
+If you just want a sample crontab line, here it is:
+```
+#m h dom mon dow command
+1 1 * * * ynam
+```
+
+Note that bank transactions have a granularity of one day, so the specific time of day will not affect the results returned.
+
 
 A cronjob or other similar scheduler is recommended.
 Currently ynam is optimized to be run once per day just after midnight.
 Future releases will include more flexability.
 
+
 Note that the first time running (```ynam quickstart```) is best performed on your local machine, i
+
+Credentials are stored at ```~/.ynamrc```.
+
+You can specify how far back ynam should reach for transactions with the ```--days``` flag, or ```-d```, which takes an integer.
+ynam will filter for all transactions on or before the day specified.
+For example, a value of 1 returns transations from today and yesterday; a value of 0 returns transactions only from today.

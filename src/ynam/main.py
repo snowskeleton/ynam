@@ -1,16 +1,16 @@
-from .utils import YNABTransaction, allTransactions
-from .api import postTransaction
-from .parser import parse
+from .utils import getTransactions
+from .api import postTransaction as post
+from .parser import arg
 
 
 def run():
-    parse()
+    if arg('quickstart'):
+        from .quickstart import run
+        run()
 
-    transactions = allTransactions()
+    transactions = getTransactions()
     for transaction in transactions:
-        transaction = YNABTransaction(transaction)
-        postTransaction(transaction)
-
+        post(transaction) if not arg('dryrun') else print(transaction)
 
 if __name__ == "__main__":
     run()

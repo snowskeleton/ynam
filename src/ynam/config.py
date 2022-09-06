@@ -1,8 +1,8 @@
 import json
-import os
+from parser import arg
 
 
-secretsPath = os.path.expanduser("~/.ynamrc")
+secretsPath = arg('config_file_path')
 keys = [
     'api_key',
     'username',
@@ -13,14 +13,21 @@ keys = [
 
 
 def _updateSecrets():
+    # degenerate function on purpose. the filesystem is weird,
+    # but it usually works out in the end, so we fail open.
     try:
         with open(secretsPath, 'r+') as file:
             return json.load(file)
     except:
-        return {}
+        newfile()
+        return _updateSecrets()
 
 
 def update(key, value):
+    """
+    Adds key:value pair to config
+    Returns updated config
+    """
     secrets = _updateSecrets()
     # don't overwrite non-blank value with blank value
     # if no value at all, add blank value.
@@ -32,18 +39,26 @@ def update(key, value):
 
 
 def valueOf(key):
-    secrets = _updateSecrets()
+    """
+    finds value for given key, creates and returns blank value if none found
+    """
     try:
-        return secrets[key]
+        return _updateSecrets()[key]
     except KeyError:
         update(key, '')
         return valueOf(key)
 
 
 def all():
+    """
+    returns entire raw config.
+    """
     return _updateSecrets()
 
 
 def newfile():
+    """
+    creates a new file with empty values.
+    """
     for key in keys:
         update(key, '')
