@@ -11,9 +11,9 @@ def postTransaction(transaction):
         json={
             "transaction": {
                 "date": transaction['date'],
-                "amount": transaction['amount'],
-                "account_id": transaction['account_id'],
-                "payee_name": transaction['payee_name'],
+                "amount": int(transaction['amount'] * 1000),
+                "account_id": valueOf('account_id'),
+                "payee_name": transaction['description'],
             }
         },
     )
