@@ -1,0 +1,8 @@
+__author__ = "snowskeleton"
+__author_email__ = "isaac@snowskeleton.net"
+__description__ = "Automate importing of Mint transactions into YNAB"
+__license__ = "Apache 2.0"
+__status__ = "Development"
+__title__ = "ynam"
+__url__ = "https://github.com/snowskeleton/ynam"
+__version__ = "0.1.3"
