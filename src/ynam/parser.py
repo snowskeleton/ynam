@@ -30,7 +30,7 @@ add('--dryrun',
     dest='dryrun',
     action='store_true',
     help='Print transactions instead of posting to YNAB')
-add('--config-file-path',
+add('--config',
     dest='config_file_path',
     action='store',
     default=os.path.expanduser('~/.ynamrc'),
