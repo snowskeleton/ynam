@@ -5,15 +5,27 @@ from .parser import arg
 
 
 def dispenseMints():
-    mint = mintapi.Mint(
-        valueOf('username'),
-        valueOf('password'),
-        headless=arg('headless'),
-        session_path=arg('mint_session_file'),
-        wait_for_sync=True,
-        wait_for_sync_timeout=300,
-    )
-    return _filter([item['fiData'] for item in mint.get_transaction_data()])
+    print("About to fetch Mint data. This could take several minutes")
+    tries = 0
+    while tries < 10:
+        try:
+            mint = mintapi.Mint(
+                valueOf('username'),
+                valueOf('password'),
+                mfa_method='soft-token',
+                mfa_token=valueOf('mfa_seed_token'),
+                headless=arg('headless'),
+                session_path=arg('session_file'),
+                wait_for_sync=False,
+                wait_for_sync_timeout=10,
+            )
+            return _filter(
+                [item['fiData'] for item in mint.get_transaction_data()])
+        except:
+            tries += 1
+    print('Failed to connect to Mint. Exiting.')
+    import sys
+    sys.exit(1)
 
 
 def _filter(transactions) -> dict:
