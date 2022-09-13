@@ -9,6 +9,7 @@ keys = [
     'password',
     'account_id',
     'budget_id',
+    'mfa_seed_token',
 ]
 
 
