@@ -17,11 +17,10 @@ def _updateSecrets():
     # degenerate function on purpose. the filesystem is weird,
     # but it usually works out in the end, so we fail open.
     try:
-        with open(secretsPath, 'r+') as file:
+        with open(secretsPath, 'r') as file:
             return json.load(file)
     except:
-        newfile()
-        return _updateSecrets()
+        return {}
 
 
 def update(key, value):
