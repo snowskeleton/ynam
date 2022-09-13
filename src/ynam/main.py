@@ -7,8 +7,7 @@ from .parser import arg
 
 
 def signal_handler(sig, frame):
-    print('\nynam: received SIGINT. exit 1')
-    sys.exit(1)
+    sys.exit(print('\nynam: received SIGINT. exit 1'))
 
 
 signal.signal(signal.SIGINT, signal_handler)
