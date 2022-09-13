@@ -5,7 +5,6 @@ from .parser import arg
 
 
 def dispenseMints():
-    print("About to fetch Mint data. This could take several minutes")
     tries = 0
     while tries < 10:
         try:
