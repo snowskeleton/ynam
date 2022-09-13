@@ -1,11 +1,10 @@
 from getpass import getpass
-from .config import update
+from .config import update, newfile
 
 
 def safeInput(cap):
+    """ guarantees int from user input
     """
-  guarantees int from user input
-  """
     while True:
         ans = input(f'Enter 0–{cap}: ')
 
@@ -31,11 +30,14 @@ def usersChoice(items):
 
 
 def run():
-    update('api_key', input('API key: ').strip())
+    newfile()
+
     update('username', input('Mint username: ').strip())
     update('password', getpass('Mint password: '))
+    update('mfa_seed_token', getpass('Mint mfa seed (optional): '))
 
-    # we can't import from api until we have the api_key
+    # import from ynab_api fails unless we have api_key
+    update('api_key', input('YNAB API key: ').strip())
     from .ynab_api import getBudgets, getAccounts
     update('budget_id', usersChoice(getBudgets())['id'])
     update('account_id', usersChoice(getAccounts())['id'])
