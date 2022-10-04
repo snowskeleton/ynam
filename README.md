@@ -33,7 +33,7 @@ Then simply:
 ynam --quickstart
 ```
 
-Enter YNAB API key and Mint username and password when prompted.
+Enter YNAB API key and Mint username and password when prompted. Choose the proper budget and Apple Card account when prompted.
 All will be saved to `~/.ynamrc` for later use by ynam.
 
 Hurray! Now we're ready to start importing transactions!
