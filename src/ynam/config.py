@@ -31,7 +31,7 @@ def update(key, value):
     secrets = _updateSecrets()
     # don't overwrite non-blank value with blank value
     # if no value at all, add blank value.
-    if value != '' or not secrets[key]:
+    if value != '' or key not in secrets:
         secrets[key] = value
         with open(secretsPath, 'w+') as file:
             file.write(json.dumps(secrets, indent=2))
