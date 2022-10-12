@@ -6,7 +6,6 @@ def postTransaction(budgetID, transaction):
     """
     Post new transaction to default budget and account
     """
-    # nt['import_id'] = f"YNAM:{nt['amount']}:{time.time()}"
     results = SendRequest.post(
         f'/budgets/{budgetID}/transactions',
         json={
@@ -24,11 +23,10 @@ def postTransaction(budgetID, transaction):
     return _decoded(results)
 
 
-def getTransactions(budgetID, since_date, type):
+def getTransactions(budgetID, type):
     result = SendRequest.get(
         f'/budgets/{budgetID}/transactions',
         json={"data": {
-            "since_date": since_date,
             "type": type,
         }},
     )

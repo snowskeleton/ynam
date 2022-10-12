@@ -11,7 +11,6 @@ def dispenseMints(cookies, key):
             [item['fiData'] for item in mints.get_transaction_data()])
     except:
         updateAuth()
-        # mints = mintapi.RESTClient()
         mints.authorize(cookies, key)
         return recent(
             [item['fiData'] for item in mints.get_transaction_data()])

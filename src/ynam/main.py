@@ -1,7 +1,9 @@
 import signal
 import sys
 import ast
+from os import path
 
+from .quickstart import updateAuth, run
 from .mint_api import dispenseMints
 from .ynab_api import postTransaction as post, getTransactions as get
 from .parser import arg
@@ -20,7 +22,7 @@ def main():
 
     mints = dispenseMints(fromFile(arg('cookies')),
                           fromFile(arg('key'))['authorization'])
-    ynab = get(stash.valueOf('budget_id'), "2022-09-16", "None")
+    ynab = get(stash.valueOf('budget_id'), "unapproved")
 
     nabs = [y['import_id'] for y in ynab]
     transactions = []
@@ -37,7 +39,6 @@ def main():
 
 def handleArgs():
     if arg('quickstart'):
-        from .quickstart import run
         run()
         sys.exit(0)
     if arg('blab'):
@@ -55,12 +56,13 @@ def handleArgs():
         print('check the code')
         sys.exit(0)
     if arg('update_auth'):
-        from .quickstart import updateAuth
         updateAuth()
         sys.exit(0)
 
 
 def fromFile(file):
+    if not path.exists(file):
+        updateAuth()
     with open(file) as file:
         return ast.literal_eval(file.read())
 
