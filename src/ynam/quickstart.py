@@ -1,5 +1,6 @@
 from getpass import getpass
-from .config import update, newfile
+from .utils import stash
+from .parser import arg as cliArg
 
 
 def safeInput(cap):
@@ -30,18 +31,36 @@ def usersChoice(items):
 
 
 def run():
-    newfile()
+    stash.newfile()
 
-    update('username', input('Mint username: ').strip())
-    update('password', getpass('Mint password: '))
-    update('mfa_seed_token', getpass('Mint mfa seed (optional): '))
+    stash.update('username', input('Mint username: ').strip())
+    stash.update('password', getpass('Mint password: '))
+    stash.update('mfa_seed_token', getpass('Mint mfa seed (optional): '))
 
     # import from ynab_api fails unless we have api_key
-    update('api_key', input('YNAB API key: ').strip())
+    stash.update('api_key', input('YNAB API key: ').strip())
     from .ynab_api import getBudgets, getAccounts
-    update('budget_id', usersChoice(getBudgets())['id'])
-    update('account_id', usersChoice(getAccounts())['id'])
+    stash.update('budget_id', usersChoice(getBudgets())['id'])
+    stash.update('account_id', usersChoice(getAccounts())['id'])
 
+
+def updateAuth():
+    from mintapi import SeleniumBrowser
+    mints = SeleniumBrowser(
+        email=stash.valueOf('username'),
+        password=stash.valueOf('password'),
+        mfa_method='soft-token',
+        mfa_token=stash.valueOf('mfa_seed_token'),
+        headless=cliArg('headless'),
+        session_path=cliArg('session_file'),
+        wait_for_sync=False,
+        wait_for_sync_timeout=10,
+    )
+    with open(cliArg('cookies'), 'w+') as file:
+        file.write(str(mints._get_cookies()))
+
+    with open(cliArg('key'), 'w+') as file:
+        file.write(str(mints._get_api_key_header()))
 
 if __name__ == "__main__":
     run()

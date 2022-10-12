@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
-from ynam import main
+import sys
+from src.ynam import main
 
-main.main()
+sys.exit(main.main())

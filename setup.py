@@ -30,5 +30,6 @@ setup(name=read_from_file("__title__"),
       packages=["ynam"],
       install_requires=[
           "mintapi",
+          "easyConfig",
       ],
       entry_points={"console_scripts": ["ynam = ynam.main:main"]})

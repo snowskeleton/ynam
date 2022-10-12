@@ -50,6 +50,28 @@ add('--chromedriver-file',
     action='store',
     default=os.path.expanduser('~/.mintapi/chromedriver'),
     help='Custom file path to chromiumdriver')
+add('--cookies',
+    dest='cookies',
+    action='store',
+    default=os.path.expanduser('~/.mintapi/cookies'),
+    help='Custom file path to session cookies')
+add('--api-key',
+    dest='key',
+    action='store',
+    default=os.path.expanduser('~/.mintapi/api_key'),
+    help='Custom file path to api key')
+add('--blab',
+    dest='blab',
+    action='store_true',
+    help='Print config info and exit')
+add('--deviate',
+    dest='deviate',
+    action='store_true',
+    help='Do developer-y things')
+add('--update-mint-auth',
+    dest='update_auth',
+    action='store_true',
+    help='Grab new api_key and cookies from Selinum session, then exit')
 
 args = parser.parse_args()
 
