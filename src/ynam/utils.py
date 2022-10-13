@@ -1,5 +1,5 @@
 from datetime import datetime as t, timedelta as delta
-from easyConfig.main import Configer
+from .easyConfig import Configer
 from .parser import arg
 
 
