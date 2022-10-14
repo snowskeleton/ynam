@@ -1,9 +1,13 @@
 import argparse
-import os
+from os import path
 from ._version import __version__
 
 parser = argparse.ArgumentParser(description='You Need a Mint (YNAM)')
 add = parser.add_argument
+
+
+def safePath(text):
+    return path.join(path.expanduser(text)).replace("/", "\\")
 
 add('--version',
     '-v',
@@ -36,29 +40,29 @@ add('--config-file-path',
     '-c',
     dest='config_file_path',
     action='store',
-    default=os.path.expanduser('~/.ynamrc'),
+    default=safePath('~/.ynamrc'),
     help='Custom ynam config file path')
 add('--session-file',
     '-s',
     dest='session_file',
     action='store',
-    default=os.path.expanduser('~/.mintapi/session'),
+    default=safePath('~/.mintapi/session'),
     help='Custom file path to chromium session')
 add('--chromedriver-file',
     '-C',
     dest='chromdriver',
     action='store',
-    default=os.path.expanduser('~/.mintapi/chromedriver'),
+    default=safePath('~/.mintapi/chromedriver'),
     help='Custom file path to chromiumdriver')
 add('--cookies',
     dest='cookies',
     action='store',
-    default=os.path.expanduser('~/.mintapi/cookies'),
+    default=safePath('~/.mintapi/cookies'),
     help='Custom file path to session cookies')
 add('--api-key',
     dest='key',
     action='store',
-    default=os.path.expanduser('~/.mintapi/api_key'),
+    default=safePath('~/.mintapi/api_key'),
     help='Custom file path to api key')
 add('--blab',
     dest='blab',
