@@ -5,11 +5,11 @@ from .parser import arg
 
 class Secrets(Configer):
 
-    def __init__(self):
-        super().__init__('ynamrc')
+    def __init__(self, name):
+        super().__init__(name)
 
 
-stash = Secrets()
+stash = Secrets('ynamrc')
 
 
 def recent(transactions) -> dict:
@@ -33,4 +33,5 @@ def mintToYnab(transaction: dict):
     nt['account_id'] = stash.valueOf('account_id')
     nt['payee_name'] = transaction['inferredDescription']
     nt['import_id'] = transaction['id']
+    nt['cleared'] = "cleared"
     return nt

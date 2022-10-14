@@ -16,23 +16,19 @@ class Configer():
     def __init__(self, name):
         self.name = name
         self.secretsPath = os.path.expanduser(f'~/.{self.name}')
-
-    def newfile(self):
-        with open(self.secretsPath) as newfile:
-            newfile.write()
+        if not os.path.exists(self.secretsPath):
+            with open(self.secretsPath, 'w') as newfile:
+                newfile.write('')
 
     def secretsDump(self):
         """
-      for ease of use
-      """
-        with open(self.secretsPath, 'r') as file:
-            return json.load(file)
-
-    def get(self, key):
-        pass
-
-    def put(self, key):
-        pass
+        for ease of use
+        """
+        try:
+            with open(self.secretsPath, 'r') as file:
+                return json.load(file)
+        except:
+            return {}
 
     def update(self, key, value):
         """
