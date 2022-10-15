@@ -20,6 +20,7 @@ def safeInput(cap):
 def usersChoice(items):
     index = 0
     if len(items) == 1:
+        print(f"{items[0]['name']}")
         print('Default to only option')
         return items[index]
     else:
