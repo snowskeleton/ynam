@@ -21,6 +21,7 @@ def usersChoice(items):
     index = 0
     if len(items) == 1:
         print('Default to only option')
+        return items[index]
     else:
         for item in items:
             print(items.index(item), item['name'])
