@@ -16,6 +16,7 @@ If you're a developer from one or both of these companies, please make ynam obso
     - Sign in to the YNAB web app and go to the "Account Settings" page and then to the "Developer Settings" page.
     - Under the "Personal Access Tokens" section, click "New Token", enter your password and click "Generate" to get an access token.
     - Make sure to save it, as it will only be displayed once.
+ - Chrome or chromium, and chromedriver
  - Apple Card Account in YNAB.
     - Choose Add Account, then Unlinked.
     - Name the account 'Apple Card', set type to 'Credit Card', and set current account balance to the one shown in Wallet.
