@@ -78,6 +78,10 @@ add('--update-mint-auth',
     dest='update_auth',
     action='store_true',
     help='Grab new api_key and cookies from Selinum session, then exit')
+add('--use-chromedriver-on-path',
+    action='store_true',
+    help='Whether to use the chromedriver on PATH, \
+        instead of downloading a local copy.')
 
 args = parser.parse_args()
 
