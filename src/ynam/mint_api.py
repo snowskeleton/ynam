@@ -51,7 +51,7 @@ class MintAPI():
             password=stash.valueOf('password'),
             mfa_method='soft-token',
             mfa_token=stash.valueOf('mfa_seed_token'),
-            use_chromedriver_on_path=arg('--use-chromedriver-on-path'),
+            use_chromedriver_on_path=arg('use_chromedriver_on_path'),
             headless=arg('headless'),
             wait_for_sync=False,
             wait_for_sync_timeout=10,
