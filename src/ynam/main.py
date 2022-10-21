@@ -28,6 +28,8 @@ def main():
             transactions.append(mintToYnab(mint))
 
     if not arg('dryrun') and len(transactions) > 0:
+        if arg('verbose'):
+            print(f'Posting {len(transactions)} transactions to YNAB')
         ynapi.bulkPostTransactions(transactions)
 
 

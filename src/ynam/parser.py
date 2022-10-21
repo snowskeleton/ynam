@@ -79,6 +79,7 @@ add('--use-chromedriver-on-path',
     help=
     'Whether to use the chromedriver on PATH, \ instead of downloading a local copy.'
     )
+add('--verbose', action='store_true', help='Enables console output')
 add('--version',
     '-v',
     action='version',
