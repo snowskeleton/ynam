@@ -1,4 +1,5 @@
 from datetime import datetime as t, timedelta as delta
+from pathlib import Path, PurePath
 from .easyConfig import Configer
 from .parser import arg
 
@@ -35,3 +36,7 @@ def mintToYnab(transaction: dict):
     nt['import_id'] = transaction['id']
     nt['cleared'] = "cleared"
     return nt
+
+
+def path(path):
+    return PurePath.joinpath(Path.home(), path)

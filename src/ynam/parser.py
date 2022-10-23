@@ -1,20 +1,14 @@
 import argparse
-import posixpath
+from utils import path
 from ._version import __version__
 
 parser = argparse.ArgumentParser(description='You Need a Mint (YNAM)')
 add = parser.add_argument
 
-
-def safePath(*args):
-    path = posixpath.join(*args)
-    return posixpath.expanduser(path)
-
-
 add('--api-key',
     dest='key',
     action='store',
-    default=safePath('~', '.mintapi_api_key'),
+    default=path('.mintapi_api_key'),
     help='Custom file path to api key')
 add('--blab',
     dest='blab',
@@ -24,18 +18,18 @@ add('--chromedriver-file',
     '-C',
     dest='chromdriver',
     action='store',
-    default=safePath('~', '.mintapi_chromedriver'),
+    default=path('.mintapi_chromedriver'),
     help='Custom file path to chromiumdriver')
 add('--config-file-path',
     '-c',
     dest='config_file_path',
     action='store',
-    default=safePath('~', '.ynamrc'),
+    default=path('.ynamrc'),
     help='Custom ynam config file path')
 add('--cookies',
     dest='cookies',
     action='store',
-    default=safePath('~', '.mintapi_cookies'),
+    default=path('.mintapi_cookies'),
     help='Custom file path to session cookies')
 add('--days',
     '-d',
@@ -68,7 +62,7 @@ add('--session-file',
     '-s',
     dest='session_file',
     action='store',
-    default=safePath('~', '.mintapi_session'),
+    default=path('.mintapi_session'),
     help='Custom file path to chromium session')
 add('--update-mint-auth',
     dest='update_auth',
