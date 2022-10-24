@@ -1,5 +1,4 @@
 from os import path as ospath
-from utils import path
 import json
 
 keys = [
@@ -15,8 +14,7 @@ keys = [
 class Configer():
 
     def __init__(self, name):
-        self.name = name
-        self.secretsPath = path(f'.{self.name}')
+        self.secretsPath = name
         if not ospath.exists(self.secretsPath):
             with open(self.secretsPath, 'w') as newfile:
                 newfile.write('')

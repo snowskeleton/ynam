@@ -1,6 +1,6 @@
 from getpass import getpass
 from .utils import stash
-from .ynab_api import YNABAPI
+from .api import YNABAPI
 
 
 def safeInput(cap):

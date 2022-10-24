@@ -1,10 +1,8 @@
 import signal
 import sys
 
-from .mint_api import MintAPI
-from .ynab_api import YNABAPI
+from .api import MintAPI, YNABAPI
 from .parser import arg
-from .utils import mintToYnab
 
 
 def signal_handler(sig, frame):
@@ -25,7 +23,7 @@ def main():
     transactions = []
     for mint in mints:
         if mint['id'] not in [y['import_id'] for y in ynab]:
-            transactions.append(mintToYnab(mint))
+            transactions.append(MintAPI.asYNAB(mint))
 
     if not arg('dryrun') and len(transactions) > 0:
         if arg('verbose'):
@@ -38,19 +36,19 @@ def handleArgs():
         from .quickstart import run
         run()
         sys.exit(0)
-    # if arg('blab'):
-    ## Uncomment if you want to be unsafe.
-    # from .config import valueOf
-    # for key in [
-    #         'api_key',
-    #         'username',
-    #         'password',
-    #         'account_id',
-    #         'budget_id',
-    #         'mfa_seed_token',
-    # ]:
-    #     print(f'{key}: {valueOf(key)}')
-    # sys.exit(0)
+    if arg('blab'):
+        # Uncomment if you want to be unsafe.
+        from .utils import stash
+        for key in [
+                'api_key',
+                'username',
+                'password',
+                'account_id',
+                'budget_id',
+                'mfa_seed_token',
+        ]:
+            print(f'{key}: {stash.valueOf(key)}')
+        sys.exit(0)
     if arg('update_auth'):
         mapi = MintAPI()
         mapi.updateAuth()

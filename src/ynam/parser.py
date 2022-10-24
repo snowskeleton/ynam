@@ -1,6 +1,10 @@
 import argparse
-from utils import path
+from pathlib import Path, PurePath
 from ._version import __version__
+
+
+def path(path):
+    return PurePath.joinpath(Path.home(), path)
 
 parser = argparse.ArgumentParser(description='You Need a Mint (YNAM)')
 add = parser.add_argument
@@ -8,7 +12,8 @@ add = parser.add_argument
 add('--api-key',
     dest='key',
     action='store',
-    default=path('.mintapi_api_key'),
+    default=path('.ynam_mintapi_api_key'),
+    type=argparse.FileType('r+'),
     help='Custom file path to api key')
 add('--blab',
     dest='blab',
@@ -18,18 +23,21 @@ add('--chromedriver-file',
     '-C',
     dest='chromdriver',
     action='store',
-    default=path('.mintapi_chromedriver'),
+    default=path('.ynam_chromedriver'),
+    type=argparse.FileType('r+'),
     help='Custom file path to chromiumdriver')
 add('--config-file-path',
     '-c',
     dest='config_file_path',
     action='store',
     default=path('.ynamrc'),
+    type=argparse.FileType('r+'),
     help='Custom ynam config file path')
 add('--cookies',
     dest='cookies',
     action='store',
-    default=path('.mintapi_cookies'),
+    default=path('.ynam_mintapi_cookies'),
+    type=argparse.FileType('r+'),
     help='Custom file path to session cookies')
 add('--days',
     '-d',
@@ -62,7 +70,8 @@ add('--session-file',
     '-s',
     dest='session_file',
     action='store',
-    default=path('.mintapi_session'),
+    default=path('.ynam_mintapi_session'),
+    type=argparse.FileType('r+'),
     help='Custom file path to chromium session')
 add('--update-mint-auth',
     dest='update_auth',
@@ -71,7 +80,7 @@ add('--update-mint-auth',
 add('--use-chromedriver-on-path',
     action='store_true',
     help=
-    'Whether to use the chromedriver on PATH, \ instead of downloading a local copy.'
+    'Whether to use the chromedriver on PATH, instead of downloading a local copy.'
     )
 add('--verbose', action='store_true', help='Enables console output')
 add('--version',

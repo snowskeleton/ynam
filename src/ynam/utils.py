@@ -1,16 +1,15 @@
 from datetime import datetime as t, timedelta as delta
-from pathlib import Path, PurePath
 from .easyConfig import Configer
 from .parser import arg
 
 
 class Secrets(Configer):
 
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, path):
+        super().__init__(path)
 
 
-stash = Secrets('ynamrc')
+stash = Secrets(arg('config_file_path'))
 
 
 def recent(transactions) -> dict:
@@ -36,7 +35,3 @@ def mintToYnab(transaction: dict):
     nt['import_id'] = transaction['id']
     nt['cleared'] = "cleared"
     return nt
-
-
-def path(path):
-    return PurePath.joinpath(Path.home(), path)
