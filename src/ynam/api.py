@@ -18,21 +18,21 @@ class MintTransaction:
     inferredDescription: str
     id: str
 
-    def asYNAB(self):
-        nt = {}
-        nt['date'] = self.date
-        nt['amount'] = int(self.amount) * 1000
-        nt['account_id'] = stash.account_id
-        nt['payee_name'] = self.inferredDescription
-        nt['import_id'] = self.id
-        nt['cleared'] = "cleared"
-        return YNABTransaction(**nt)
-
     @classmethod
     def from_dict(cls, env):
         return cls(**{
             k: v
             for k, v in env.items() if k in inspect.signature(cls).parameters
+        })
+
+    def asYNAB(self):
+        return YNABTransaction({
+            "date": self.date,
+            "amount": int(self.amount) * 1000,
+            "account_id": stash.account_id,
+            "payee_name": self.inferredDescription,
+            "import_id": self.id,
+            "cleared": "cleared",
         })
 
 
