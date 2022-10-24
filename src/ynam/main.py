@@ -17,42 +17,25 @@ def main():
     ynapi = YNABAPI()
     mapi = MintAPI()
 
-    ynab = ynapi.getTransactions()
-    mints = mapi.dispenseMints()
+    ynabs = [y.import_id for y in ynapi.getTransactions()]
+    mints = [mint.asYNAB for mint in mapi.freshMints() if mint.id not in ynabs]
 
-    transactions = []
-    for mint in mints:
-        if mint['id'] not in [y['import_id'] for y in ynab]:
-            transactions.append(MintAPI.asYNAB(mint))
-
-    if not arg('dryrun') and len(transactions) > 0:
+    if not arg('dryrun') and len(mints) > 0:
         if arg('verbose'):
-            print(f'Posting {len(transactions)} transactions to YNAB')
-        ynapi.bulkPostTransactions(transactions)
+            print(f'Posting {len(mints)} transactions to YNAB')
+        ynapi.bulkPostTransactions(mints)
 
 
 def handleArgs():
     if arg('quickstart'):
         from .quickstart import run
-        run()
-        sys.exit(0)
+        sys.exit(run())
     if arg('blab'):
-        # Uncomment if you want to be unsafe.
-        from .utils import stash
-        for key in [
-                'api_key',
-                'username',
-                'password',
-                'account_id',
-                'budget_id',
-                'mfa_seed_token',
-        ]:
-            print(f'{key}: {stash.valueOf(key)}')
-        sys.exit(0)
+        from .secrets import stash
+        sys.exit(print(stash))
     if arg('update_auth'):
         mapi = MintAPI()
-        mapi.updateAuth()
-        sys.exit(0)
+        sys.exit(mapi.updateAuth())
 
 
 if __name__ == "__main__":

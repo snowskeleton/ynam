@@ -1,11 +1,59 @@
+from dataclasses import dataclass
+from datetime import datetime
 import ast
+import inspect
+import requests, json
 import mintapi
-from .utils import stash
+from .secrets import stash
 from .parser import arg
 
-import sys
-import requests, json
-from datetime import datetime as t, timedelta as delta
+tfmt = '%Y-%m-%d'
+
+
+@dataclass
+class MintTransaction:
+
+    date: str
+    amount: int
+    inferredDescription: str
+    id: str
+
+    def asYNAB(self):
+        nt = {}
+        nt['date'] = self.date
+        nt['amount'] = int(self.amount) * 1000
+        nt['account_id'] = stash.account_id
+        nt['payee_name'] = self.inferredDescription
+        nt['import_id'] = self.id
+        nt['cleared'] = "cleared"
+        return YNABTransaction(**nt)
+
+    @classmethod
+    def from_dict(cls, env):
+        return cls(**{
+            k: v
+            for k, v in env.items() if k in inspect.signature(cls).parameters
+        })
+
+
+@dataclass
+class YNABTransaction:
+
+    date: str
+    amount: int
+    account_id: str
+    payee_name: str
+    import_id: str
+
+    def __dict__(self):
+        return {"transaction": {dir(self)}}
+
+    @classmethod
+    def from_dict(cls, env):
+        return cls(**{
+            k: v
+            for k, v in env.items() if k in inspect.signature(cls).parameters
+        })
 
 
 class MintAPI():
@@ -16,7 +64,7 @@ class MintAPI():
         self.cpath = arg('cookies')
         self.keypath = arg('key')
 
-    def dispenseMints(self):
+    def freshMints(self):
         client = self.restClient()
         key = self.key()
         cookies = self.cookies()
@@ -29,7 +77,8 @@ class MintAPI():
             client.authorize(cookies, key)
             items = client.get_transaction_data()
         finally:
-            return recent([item['fiData'] for item in items])
+            return recent(
+                [MintTransaction.from_dict(item['fiData']) for item in items])
 
     def cookies(self):
         try:
@@ -51,10 +100,10 @@ class MintAPI():
 
     def updateAuth(self):
         bowser = self.browser(
-            email=stash.valueOf('username'),
-            password=stash.valueOf('password'),
+            email=stash.username,
+            password=stash.password,
             mfa_method='soft-token',
-            mfa_token=stash.valueOf('mfa_seed_token'),
+            mfa_token=stash.mfa_seed_token,
             use_chromedriver_on_path=arg('use_chromedriver_on_path'),
             headless=arg('headless'),
             wait_for_sync=False,
@@ -66,25 +115,14 @@ class MintAPI():
         with open(arg('key'), 'w+') as file:
             file.write(str(bowser._get_api_key_header()))
 
-    @classmethod
-    def asYNAB(transaction: dict):
-        nt = {}
-        nt['date'] = transaction['date']
-        nt['amount'] = int(transaction['amount'] * 1000)
-        nt['account_id'] = stash.valueOf('account_id')
-        nt['payee_name'] = transaction['inferredDescription']
-        nt['import_id'] = transaction['id']
-        nt['cleared'] = "cleared"
-        return nt
-
 
 class YNABAPI():
 
     def __init__(self) -> None:
         self.uri = 'https://api.youneedabudget.com/v1/'
         self.headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {stash.valueOf("api_key")}'
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {stash.api_key}"
         }
 
     def _post(self, url, **kwargs):
@@ -93,84 +131,57 @@ class YNABAPI():
     def _get(self, url, **kwargs):
         return requests.get(self.uri + url, **kwargs, headers=self.headers)
 
-    def bulkPostTransactions(self, transactions: dict):
+    def bulkPostTransactions(self, transactions: dict[YNABTransaction]):
         results = self._post(
-            f'/budgets/{stash.valueOf("budget_id")}/transactions',
+            f'/budgets/{stash.budget_id}/transactions',
             json={"transactions": transactions},
         )
 
-        return _decoded(results)
-
-    def postTransaction(self, transaction):
-        """
-        Post new transaction to default budget and account
-        """
-        results = self._post(
-            self.uri + f'/budgets/{stash.valueOf("budget_id")}/transactions',
-            json={
-                "transaction": {
-                    "date": transaction['date'],
-                    "amount": int(transaction['amount']),
-                    "account_id": transaction['account_id'],
-                    "payee_name": transaction['payee_name'],
-                    "import_id": transaction['import_id'],
-                    "cleared": "cleared",
-                }
-            },
-        )
-
-        return _decoded(results)
+        return real(results)
 
     def getTransactions(self, since_date: str = '', type: str = ''):
         """
         Return all recent transactions
         """
         result = self._get(
-            f'/budgets/{stash.valueOf("budget_id")}/transactions',
+            f'/budgets/{stash.budget_id}/transactions',
             json={"data": {
                 "since_date": since_date,
                 "type": type,
             }},
         )
 
-        return recent(_decoded(result)['transactions'])
+        return recent([
+            YNABTransaction.from_dict(xt)
+            for xt in real(result)['transactions']
+        ])
 
     def getAccounts(self):
         """
         Return list of bank accounts/cards linked to default budget
         """
-        result = self._get(f'/budgets/{stash.valueOf("budget_id")}/accounts')
-
-        return _decoded(result)['accounts']
+        return real(
+            self._get(f'/budgets/{stash.budget_id}/accounts'))['accounts']
 
     def getBudgets(self):
         """
         Return list of budgets
         """
-        result = self._get(url='/budgets')
-
-        return _decoded(result)['budgets']
+        return real(self._get(url='/budgets'))['budgets']
 
 
 def recent(transactions) -> dict:
-    ans = []
-    for item in transactions:
-        itemDate = t.strptime(item['date'], '%Y-%m-%d')
-        if dateCalc(itemDate.strftime('%Y-%m-%d')):
-            ans.append(item)
-    return ans
+    filter = lambda xtDate: xtDate >= str(arg('days'))
+    return [
+        xt for xt in transactions
+        if filter(datetime.strptime(xt.date, tfmt).strftime(tfmt))
+    ]
 
 
-def dateCalc(date):
-    return date >= (t.today() -
-                    delta(days=int(arg('days')))).strftime('%Y-%m-%d')
-
-
-def _decoded(httpResponse) -> dict:
+def real(httpResponse) -> dict:
     answer = json.loads(httpResponse.content.decode('utf-8'))
     try:
-        return answer['data'] if answer['data'] else answer
+        return answer['data']
     except Exception as e:
         print(answer)
-        print(e)
-        sys.exit()
+        raise e

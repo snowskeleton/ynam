@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path, PurePath
 from ._version import __version__
+from datetime import datetime as t, timedelta as delta
 
 
 def path(path):
@@ -43,6 +44,7 @@ add('--days',
     '-d',
     dest='days',
     action='store',
+    type=lambda d: t.today() - delta(days=int(d)),
     default='1',
     help='Cutoff (in days) for how far back to search'
     'A value of 0 gets transactions from today only')
