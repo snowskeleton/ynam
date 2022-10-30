@@ -33,14 +33,14 @@ def usersChoice(items):
 
 
 def run():
-    updateStash('username', input('Mint username: ').strip())
-    updateStash('password', getpass('Mint password: '))
-    updateStash('mfa_seed_token', getpass('Mint mfa seed (optional): '))
+    updateStash('mint_username', input('Mint username: ').strip())
+    updateStash('mint_password', getpass('Mint password: '))
+    updateStash('mint_mfa_seed', getpass('Mint mfa seed (optional): '))
 
-    updateStash('api_key', input('YNAB API key: ').strip())
+    updateStash('ynab_api_key', input('YNAB API key: ').strip())
     ynapi = YNABAPI()
-    updateStash('budget_id', usersChoice(ynapi.getBudgets())['id'])
-    updateStash('account_id', usersChoice(ynapi.getAccounts())['id'])
+    updateStash('ynab_budget_id', usersChoice(ynapi.getBudgets())['id'])
+    updateStash('ynab_account_id', usersChoice(ynapi.getAccounts())['id'])
 
 
 if __name__ == "__main__":

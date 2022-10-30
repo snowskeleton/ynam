@@ -26,14 +26,14 @@ class MintTransaction:
         })
 
     def asYNAB(self):
-        return YNABTransaction({
-            "date": self.date,
-            "amount": int(self.amount) * 1000,
-            "account_id": stash.account_id,
-            "payee_name": self.inferredDescription,
-            "import_id": self.id,
-            "cleared": "cleared",
-        })
+        return YNABTransaction(
+            **{
+                "date": self.date,
+                "amount": int(self.amount) * 1000,
+                "account_id": stash.ynab_account_id,
+                "payee_name": self.inferredDescription,
+                "import_id": self.id,
+            })
 
 
 @dataclass
@@ -44,9 +44,7 @@ class YNABTransaction:
     account_id: str
     payee_name: str
     import_id: str
-
-    def __dict__(self):
-        return {"transaction": {dir(self)}}
+    cleared: str = 'cleared'
 
     @classmethod
     def from_dict(cls, env):
@@ -61,20 +59,18 @@ class MintAPI():
     def __init__(self) -> None:
         self.restClient = mintapi.RESTClient
         self.browser = mintapi.SeleniumBrowser
-        self.cpath = arg('cookies')
-        self.keypath = arg('key')
+        self.cpath = arg('mint_cookies')
+        self.keypath = arg('mint_api_key_file')
 
     def freshMints(self):
         client = self.restClient()
-        key = self.key()
-        cookies = self.cookies()
 
-        client.authorize(cookies, key)
+        client.authorize(self.cookies(), self.key())
         try:
             items = client.get_transaction_data()
         except:
             self.updateAuth()
-            client.authorize(cookies, key)
+            client.authorize(self.cookies(), self.key())
             items = client.get_transaction_data()
         finally:
             return recent(
@@ -100,19 +96,19 @@ class MintAPI():
 
     def updateAuth(self):
         bowser = self.browser(
-            email=stash.username,
-            password=stash.password,
+            email=stash.mint_username,
+            password=stash.mint_password,
             mfa_method='soft-token',
-            mfa_token=stash.mfa_seed_token,
+            mfa_token=stash.mint_mfa_seed,
             use_chromedriver_on_path=arg('use_chromedriver_on_path'),
             headless=arg('headless'),
             wait_for_sync=False,
             wait_for_sync_timeout=10,
         )
-        with open(arg('cookies'), 'w+') as file:
+        with open(arg('mint_cookies'), 'w+') as file:
             file.write(str(bowser._get_cookies()))
 
-        with open(arg('key'), 'w+') as file:
+        with open(arg('mint_api_key_file'), 'w+') as file:
             file.write(str(bowser._get_api_key_header()))
 
 
@@ -122,7 +118,7 @@ class YNABAPI():
         self.uri = 'https://api.youneedabudget.com/v1/'
         self.headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {stash.api_key}"
+            "Authorization": f"Bearer {stash.ynab_api_key}"
         }
 
     def _post(self, url, **kwargs):
@@ -131,9 +127,9 @@ class YNABAPI():
     def _get(self, url, **kwargs):
         return requests.get(self.uri + url, **kwargs, headers=self.headers)
 
-    def bulkPostTransactions(self, transactions: dict[YNABTransaction]):
+    def bulkPostTransactions(self, transactions: dict):
         results = self._post(
-            f'/budgets/{stash.budget_id}/transactions',
+            f'/budgets/{stash.ynab_budget_id}/transactions',
             json={"transactions": transactions},
         )
 
@@ -144,7 +140,7 @@ class YNABAPI():
         Return all recent transactions
         """
         result = self._get(
-            f'/budgets/{stash.budget_id}/transactions',
+            f'/budgets/{stash.ynab_budget_id}/transactions',
             json={"data": {
                 "since_date": since_date,
                 "type": type,
@@ -161,7 +157,7 @@ class YNABAPI():
         Return list of bank accounts/cards linked to default budget
         """
         return real(
-            self._get(f'/budgets/{stash.budget_id}/accounts'))['accounts']
+            self._get(f'/budgets/{stash.ynab_budget_id}/accounts'))['accounts']
 
     def getBudgets(self):
         """

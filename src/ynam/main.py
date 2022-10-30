@@ -1,3 +1,4 @@
+from dataclasses import asdict
 import signal
 import sys
 
@@ -18,12 +19,14 @@ def main():
     mapi = MintAPI()
 
     ynabs = [y.import_id for y in ynapi.getTransactions()]
-    mints = [mint.asYNAB for mint in mapi.freshMints() if mint.id not in ynabs]
+    ynabs = [
+        mint.asYNAB() for mint in mapi.freshMints() if mint.id not in ynabs
+    ]
 
-    if not arg('dryrun') and len(mints) > 0:
+    if not arg('dryrun') and len(ynabs) > 0:
         if arg('verbose'):
-            print(f'Posting {len(mints)} transactions to YNAB')
-        ynapi.bulkPostTransactions(mints)
+            print(f'Posting {len(ynabs)} transactions to YNAB')
+        ynapi.bulkPostTransactions([asdict(nab) for nab in ynabs])
 
 
 def handleArgs():

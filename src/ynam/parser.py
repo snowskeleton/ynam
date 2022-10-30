@@ -7,11 +7,23 @@ from datetime import datetime as t, timedelta as delta
 def path(path):
     return PurePath.joinpath(Path.home(), path)
 
+
 parser = argparse.ArgumentParser(description='You Need a Mint (YNAM)')
 add = parser.add_argument
 
-add('--api-key',
-    dest='key',
+add('--account-id',
+    dest='ynab_account_id',
+    action='store',
+    default=None,
+    help='YNAB account ID')
+add('--api-key-literal',
+    dest='ynab_api_key',
+    action='store',
+    type=str,
+    default=None,
+    help='Literal string api key')
+add('--api-key-file',
+    dest='mint_api_key_file',
     action='store',
     default=path('.ynam_mintapi_api_key'),
     type=argparse.FileType('r+'),
@@ -20,6 +32,11 @@ add('--blab',
     dest='blab',
     action='store_true',
     help='Print config info and exit')
+add('--budget-id',
+    dest='ynab_budget_id',
+    action='store',
+    default=None,
+    help='YNAB budget ID')
 add('--chromedriver-file',
     '-C',
     dest='chromdriver',
@@ -35,7 +52,7 @@ add('--config-file-path',
     type=argparse.FileType('r+'),
     help='Custom ynam config file path')
 add('--cookies',
-    dest='cookies',
+    dest='mint_cookies',
     action='store',
     default=path('.ynam_mintapi_cookies'),
     type=argparse.FileType('r+'),
@@ -63,6 +80,16 @@ add('--graphics',
     dest='headless',
     action='store_false',
     help='Flag to run non-headless. Used to input 2FA codes')
+add('--mfa-seed',
+    dest='mint_mfa_seed',
+    action='store',
+    default=None,
+    help='Mint MFA token seed')
+add('--password',
+    dest='mint_password',
+    action='store',
+    default=None,
+    help='Mint password')
 add('--quickstart',
     '-q',
     dest='quickstart',
@@ -75,6 +102,11 @@ add('--session-file',
     default=path('.ynam_mintapi_session'),
     type=argparse.FileType('r+'),
     help='Custom file path to chromium session')
+add('--username',
+    dest='mint_username',
+    action='store',
+    default=None,
+    help='Mint username')
 add('--update-mint-auth',
     dest='update_auth',
     action='store_true',
