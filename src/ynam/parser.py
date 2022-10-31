@@ -90,6 +90,10 @@ add('--password',
     action='store',
     default=None,
     help='Mint password')
+add('--print-ynab-transactions',
+    dest='print_ynab_transactions',
+    action='store_true',
+    help='Print ynab transactions and exit')
 add('--quickstart',
     '-q',
     dest='quickstart',

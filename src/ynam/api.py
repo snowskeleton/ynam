@@ -75,8 +75,9 @@ class MintAPI():
             client.authorize(cookies, key)
             items = client.get_transaction_data()
         finally:
-            return recent(
-                [MintTransaction.from_dict(item['fiData']) for item in items])
+            return [
+                MintTransaction.from_dict(item['fiData']) for item in items
+            ]
 
     def cookies(self):
         try:
@@ -137,11 +138,11 @@ class YNABAPI():
 
         return real(results)
 
-    def getTransactions(self, since_date: str = '', type: str = ''):
+    def getUglyTransactions(self, since_date: str = '', type: str = ''):
         """
-        Return all recent transactions
+        Return transactions as raw json
         """
-        result = self._get(
+        return self._get(
             f'/budgets/{stash.ynab_budget_id}/transactions',
             json={"data": {
                 "since_date": since_date,
@@ -149,10 +150,21 @@ class YNABAPI():
             }},
         )
 
-        return recent([
+    def getTransactions(self, since_date: str = '', type: str = ''):
+        """
+        Return transactions as YNABTransaction dataclass objects
+        """
+        result = self.getUglyTransactions(since_date, type)
+        return [
             YNABTransaction.from_dict(xt)
             for xt in real(result)['transactions']
-        ])
+        ]
+
+    def printTransactions(self, since_date: str = '', type: str = ''):
+        result = self.getUglyTransactions(since_date, type)
+        print(
+            json.dumps((recent([xt for xt in real(result)['transactions']])),
+                       indent=2))
 
     def getAccounts(self):
         """
@@ -180,6 +192,5 @@ def real(httpResponse) -> dict:
     answer = json.loads(httpResponse.content.decode('utf-8'))
     try:
         return answer['data']
-    except Exception as e:
-        print(answer)
-        raise e
+    except KeyError:
+        print(answer['error'])

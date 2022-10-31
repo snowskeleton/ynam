@@ -30,6 +30,8 @@ def main():
 
 
 def handleArgs():
+    if arg('print_ynab_transactions'):
+        sys.exit(YNABAPI().printTransactions())
     if arg('quickstart'):
         from .quickstart import run
         sys.exit(run())
