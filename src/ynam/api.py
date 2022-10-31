@@ -45,6 +45,9 @@ class YNABTransaction:
     import_id: str
     cleared: str = 'cleared'
 
+    def __post_init__(self):
+        self.payee_name = self.payee_name[:100]
+
     @classmethod
     def from_dict(cls, env):
         return cls(**{
