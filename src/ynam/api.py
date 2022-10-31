@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime
 import ast
 import inspect
 import requests, json
@@ -29,7 +28,7 @@ class MintTransaction:
         return YNABTransaction(
             **{
                 "date": self.date,
-                "amount": int(self.amount) * 1000,
+                "amount": int(self.amount * 1000),
                 "account_id": stash.ynab_account_id,
                 "payee_name": self.inferredDescription,
                 "import_id": self.id,
@@ -124,6 +123,9 @@ class YNABAPI():
             "Authorization": f"Bearer {stash.ynab_api_key}"
         }
 
+    def _patch(self, url, **kwargs):
+        return requests.patch(self.uri + url, **kwargs, headers=self.headers)
+
     def _post(self, url, **kwargs):
         return requests.post(self.uri + url, **kwargs, headers=self.headers)
 
@@ -162,9 +164,8 @@ class YNABAPI():
 
     def printTransactions(self, since_date: str = '', type: str = ''):
         result = self.getUglyTransactions(since_date, type)
-        print(
-            json.dumps((recent([xt for xt in real(result)['transactions']])),
-                       indent=2))
+        print(json.dumps(([xt for xt in real(result)['transactions']])),
+              indent=2)
 
     def getAccounts(self):
         """
@@ -178,14 +179,6 @@ class YNABAPI():
         Return list of budgets
         """
         return real(self._get(url='/budgets'))['budgets']
-
-
-def recent(transactions) -> dict:
-    filter = lambda xtDate: xtDate >= str(arg('days'))
-    return [
-        xt for xt in transactions
-        if filter(datetime.strptime(xt.date, tfmt).strftime(tfmt))
-    ]
 
 
 def real(httpResponse) -> dict:

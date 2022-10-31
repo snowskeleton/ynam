@@ -18,10 +18,7 @@ def main():
     ynapi = YNABAPI()
     mapi = MintAPI()
 
-    ynabs = [y.import_id for y in ynapi.getTransactions()]
-    ynabs = [
-        mint.asYNAB() for mint in mapi.freshMints() if mint.id not in ynabs
-    ]
+    ynabs = [mint.asYNAB() for mint in mapi.freshMints()]
 
     if not arg('dryrun') and len(ynabs) > 0:
         if arg('verbose'):
