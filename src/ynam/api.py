@@ -64,13 +64,15 @@ class MintAPI():
 
     def freshMints(self):
         client = self.restClient()
+        key = self.key()
+        cookies = self.cookies()
 
-        client.authorize(self.cookies(), self.key())
+        client.authorize(cookies, key)
         try:
             items = client.get_transaction_data()
         except:
             self.updateAuth()
-            client.authorize(self.cookies(), self.key())
+            client.authorize(cookies, key)
             items = client.get_transaction_data()
         finally:
             return recent(
