@@ -20,9 +20,9 @@ def main():
 
     ydeez = [y.import_id for y in ynapi.getTransactions()]
     nabs = [
-        asdict(mint.asYNAB()) for mint in mapi.freshMints()
-        if mint.id not in ydeez
+        mint.asYNAB() for mint in mapi.freshMints() if mint.id not in ydeez
     ]
+    nabs = [nab.asDict() for nab in nabs]
     if arg('verbose'):
         print(nabs)
     if not arg('dryrun') and len(nabs) > 0:

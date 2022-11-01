@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 import ast
 import inspect
 import requests, json
@@ -23,6 +23,9 @@ class MintTransaction:
             k: v
             for k, v in env.items() if k in inspect.signature(cls).parameters
         })
+
+    def asDict(self):
+        return asdict(self)
 
     def asYNAB(self):
         return YNABTransaction(
@@ -55,6 +58,9 @@ class YNABTransaction:
 
     def __post_init__(self):
         self.payee_name = self.payee_name[:100]
+
+    def asDict(self):
+        return asdict(self)
 
     @classmethod
     def from_dict(cls, env):
