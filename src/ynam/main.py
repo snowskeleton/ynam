@@ -19,13 +19,11 @@ def main():
     mapi = MintAPI()
 
     ynabs = [mint.asYNAB() for mint in mapi.freshMints()]
-
+    nabs = [asdict(nab) for nab in ynabs]
+    if arg('verbose'):
+        print(nabs)
     if not arg('dryrun') and len(ynabs) > 0:
-        if arg('verbose'):
-            print(f'Posting {len(ynabs)} transactions to YNAB')
-        ynapi.bulkPostTransactions([asdict(nab) for nab in ynabs])
-    else:
-        print([asdict(nab) for nab in ynabs])
+        ynapi.bulkPostTransactions(nabs)
 
 
 def handleArgs():
