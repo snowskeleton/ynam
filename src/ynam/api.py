@@ -78,7 +78,7 @@ class MintAPI():
         self.cpath = arg('mint_cookies')
         self.keypath = arg('mint_api_key_file')
 
-    def freshMints(self):
+    def getXtns(self):
         client = self.restClient()
         key = self.key()
         cookies = self.cookies()
@@ -182,7 +182,7 @@ class YNABAPI():
             }},
         )
 
-    def getTransactions(self, since_date: str = '', type: str = ''):
+    def getXtns(self, since_date: str = '', type: str = ''):
         """
         Return transactions as YNABTransaction dataclass objects
         """
@@ -192,7 +192,7 @@ class YNABAPI():
             for xt in real(result)['transactions']
         ]
 
-    def printTransactions(self, since_date: str = '', type: str = ''):
+    def printXtns(self, since_date: str = '', type: str = ''):
         result = self.getUglyTransactions(since_date, type)
         print(
             json.dumps(([xt for xt in real(result)['transactions']]),
