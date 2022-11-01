@@ -175,8 +175,9 @@ class YNABAPI():
 
     def printTransactions(self, since_date: str = '', type: str = ''):
         result = self.getUglyTransactions(since_date, type)
-        print(json.dumps(([xt for xt in real(result)['transactions']])),
-              indent=2)
+        print(
+            json.dumps(([xt for xt in real(result)['transactions']]),
+                       indent=2))
 
     def getAccounts(self):
         """
