@@ -43,6 +43,14 @@ class YNABTransaction:
     account_id: str
     payee_name: str
     import_id: str
+    id: str = None
+    payee_id: str = None
+    category_id: str = None
+    memo: str = None
+    cleared: str = None
+    approved: str = None
+    flag_color: str = None
+    subtransactions: list = None
     cleared: str = 'cleared'
 
     def __post_init__(self):
