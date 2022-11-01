@@ -143,7 +143,20 @@ class YNABAPI():
     def _get(self, url, **kwargs):
         return requests.get(self.uri + url, **kwargs, headers=self.headers)
 
-    def bulkPostTransactions(self, transactions: dict):
+    def bulkPatchTransactions(self, transactions: list):
+        url = f'/budgets/{stash.ynab_budget_id}/transactions'
+        # this json doesn't seem to like being too long. it works
+        # with 10 items, and breaks with 250, but I'm not sure where
+        # they meet
+        json = {"transactions": transactions}
+        results = self._patch(
+            url,
+            json=json,
+        )
+
+        return real(results)
+
+    def bulkPostTransactions(self, transactions: list):
         results = self._post(
             f'/budgets/{stash.ynab_budget_id}/transactions',
             json={"transactions": transactions},
