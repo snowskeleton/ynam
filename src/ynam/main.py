@@ -24,6 +24,8 @@ def main():
         if arg('verbose'):
             print(f'Posting {len(ynabs)} transactions to YNAB')
         ynapi.bulkPostTransactions([asdict(nab) for nab in ynabs])
+    else:
+        print([asdict(nab) for nab in ynabs])
 
 
 def handleArgs():
