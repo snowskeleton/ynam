@@ -80,38 +80,31 @@ class MintAPI():
 
     def getXtns(self):
         client = self.restClient()
-        key = self.key()
-        cookies = self.cookies()
-
-        client.authorize(cookies, key)
         try:
-            items = client.get_transaction_data()
-        except:
+            client.authorize(self.cookies(), self.key())
+        except IsADirectoryError as e:
+            print(e)
+            print("""
+                  One or more expected files is a directory instead \n
+                  If you don't have a value to supply, simply create \n
+                  an empty file in the desired location \n
+                  """)
+        except Exception as e:
             self.updateAuth()
-            client.authorize(cookies, key)
-            items = client.get_transaction_data()
+            client.authorize(self.cookies(), self.key())
         finally:
+            items = client.get_transaction_data()
             return [
                 MintTransaction.from_dict(item['fiData']) for item in items
             ]
 
     def cookies(self):
-        try:
-            with open(self.cpath, 'r') as file:
-                return ast.literal_eval(file.read())
-        except FileNotFoundError:
-            self.updateAuth()
-            with open(self.cpath, 'r') as file:
-                return ast.literal_eval(file.read())
+        with open(self.cpath, 'r') as file:
+            return ast.literal_eval(file.read())
 
     def key(self):
-        try:
-            with open(self.keypath, 'r') as file:
-                return ast.literal_eval(file.read())['authorization']
-        except FileNotFoundError:
-            self.updateAuth()
-            with open(self.keypath, 'r') as file:
-                return ast.literal_eval(file.read())['authorization']
+        with open(self.keypath, 'r') as file:
+            return ast.literal_eval(file.read())['authorization']
 
     def updateAuth(self):
         bowser = self.browser(
