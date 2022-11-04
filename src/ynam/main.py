@@ -17,8 +17,14 @@ def main():
     ynapi = YNABAPI()
     mapi = MintAPI()
 
+    try:
+        mints = mapi.getXtns()
+    except Exception:
+        mapi.updateAuth()
+        mints = mapi.getXtns()
+
     ydeez = [y.import_id for y in ynapi.getXtns()]
-    nabs = [mint.asYNAB() for mint in mapi.getXtns() if mint.id not in ydeez]
+    nabs = [mint.asYNAB() for mint in mints if mint.id not in ydeez]
     nabs = [nab.asDict() for nab in nabs]
     if arg('verbose'):
         print(nabs)

@@ -79,9 +79,13 @@ class MintAPI():
         self.keypath = arg('mint_api_key_file')
 
     def getXtns(self):
-        client = self.restClient()
         try:
+            client = self.restClient()
             client.authorize(self.cookies(), self.key())
+            items = client.get_transaction_data()
+            return [
+                MintTransaction.from_dict(item['fiData']) for item in items
+            ]
         except IsADirectoryError as e:
             print(e)
             print("""
@@ -89,14 +93,6 @@ class MintAPI():
                   If you don't have a value to supply, simply create \n
                   an empty file in the desired location \n
                   """)
-        except Exception as e:
-            self.updateAuth()
-            client.authorize(self.cookies(), self.key())
-        finally:
-            items = client.get_transaction_data()
-            return [
-                MintTransaction.from_dict(item['fiData']) for item in items
-            ]
 
     def cookies(self):
         with open(self.cpath, 'r') as file:
