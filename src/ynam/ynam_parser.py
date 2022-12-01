@@ -18,18 +18,6 @@ add('--account-id',
     action='store',
     default=None,
     help='YNAB account ID')
-add('--api-key-literal',
-    dest='ynab_api_key',
-    action='store',
-    type=str,
-    default=None,
-    help='Literal string api key')
-add('--api-key-file',
-    dest='mint_api_key_file',
-    action='store',
-    default=path('.ynam_mintapi_api_key'),
-    type=argparse.FileType('r+'),
-    help='Custom file path to api key')
 add('--blab',
     dest='blab',
     action='store_true',
@@ -87,6 +75,12 @@ add('--mfa-seed',
     action='store',
     default=None,
     help='Mint MFA token seed')
+add('--mint-api-key-file',
+    dest='mint_api_key_file',
+    action='store',
+    default=path('.ynam_mintapi_api_key'),
+    type=argparse.FileType('r+'),
+    help='Custom file path to api key')
 add('--password',
     dest='mint_password',
     action='store',
@@ -127,6 +121,12 @@ add('--version',
     '-v',
     action='version',
     version='snowskeleton/ynam ' + __version__)
+add('--ynab-api-key-literal',
+    dest='ynab_api_key',
+    action='store',
+    type=str,
+    default=None,
+    help='Literal string api key')
 
 args = parser.parse_args()
 
