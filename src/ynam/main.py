@@ -21,10 +21,10 @@ def main():
     mapi = MintAPI()
 
     try:
-        mints = mapi.getXtns(start_date="2022-11-03")
+        mints = mapi.getXtns(start_date=arg('days'))
     except Exception:
         mapi.updateAuth()
-        mints = mapi.getXtns(start_date="2022-11-03")
+        mints = mapi.getXtns(start_date=arg('days'))
 
     ydeez = [
         y.import_id
