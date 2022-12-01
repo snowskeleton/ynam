@@ -1,10 +1,11 @@
 from getpass import getpass
-from .secrets import updateStash
-from .api import YNABAPI
+
+from .ynab_api import YNABAPI
+from .ynam_secrets import stash, updateStash
 
 
 def safeInput(cap):
-    """ guarantees int from user input
+    """guarantees int from user input
     """
     while True:
         ans = input(f'Enter 0–{cap}: ')
@@ -38,9 +39,9 @@ def run():
     updateStash('mint_mfa_seed', getpass('Mint mfa seed (optional): '))
 
     updateStash('ynab_api_key', input('YNAB API key: ').strip())
-    ynapi = YNABAPI()
-    updateStash('ynab_budget_id', usersChoice(ynapi.getBudgets())['id'])
-    updateStash('ynab_account_id', usersChoice(ynapi.getAccounts())['id'])
+    ynapi = YNABAPI(stash.ynab_api_key)
+    updateStash('ynab_budget_id', usersChoice(ynapi.get_budgets())['id'])
+    updateStash('ynab_account_id', usersChoice(ynapi.get_accounts())['id'])
 
 
 if __name__ == "__main__":

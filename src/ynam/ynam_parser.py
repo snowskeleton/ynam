@@ -1,7 +1,9 @@
 import argparse
+from datetime import datetime as t
+from datetime import timedelta as delta
 from pathlib import Path, PurePath
+
 from ._version import __version__
-from datetime import datetime as t, timedelta as delta
 
 
 def path(path):

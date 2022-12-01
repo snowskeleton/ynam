@@ -1,7 +1,8 @@
-from dataclasses import dataclass
-import os
 import json
-from .parser import arg
+import os
+from dataclasses import dataclass
+
+from .ynam_parser import arg
 
 
 @dataclass
@@ -29,6 +30,7 @@ def loadSecrets():
         if arg(key) is not None:
             fileSecrets[key] = arg(key)
     return fileSecrets
+
 
 def updateStash(key, value):
     if value != '':
