@@ -19,8 +19,9 @@ class Secrets():
 
 def loadSecrets():
     fileSecrets = {}
-    if os.path.exists(arg('config_file_path')):
-        with open(arg('config_file_path'), 'r') as file:
+    path = arg('config_file')
+    if os.path.exists(path):
+        with open(path) as file:
             fileSecrets = json.load(file)
 
     for key in {
@@ -36,7 +37,7 @@ def updateStash(key, value):
     if value != '':
         secrets = {**loadSecrets()}
         secrets[key] = value
-        with open(arg('config_file_path'), 'w+') as file:
+        with open(arg('config_file'), 'w+') as file:
             file.write(json.dumps(secrets, indent=2))
 
 

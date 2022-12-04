@@ -1,5 +1,6 @@
 import signal
 import sys
+import os
 
 from .mint_api import MintAPI
 from .ynab_api import YNABAPI
@@ -15,6 +16,7 @@ signal.signal(signal.SIGINT, signal_handler)
 
 
 def main():
+    handleEdgeCases()
     handleArgs()
     ynapi = YNABAPI(stash.ynab_api_key)
     ynapi.budget_id = stash.ynab_budget_id
@@ -50,6 +52,27 @@ def handleArgs():
         mapi = MintAPI()
         sys.exit(mapi.updateAuth())
 
+
+def handleEdgeCases():
+    files = [
+        arg('config_file'),
+        arg('mint_api_key_file'),
+        arg('mint_cookies'),
+        arg('chromedriver'),
+        arg('session_file'),
+    ]
+    for file in files:
+        if not os.path.exists(file):
+            with open(file, 'w'):
+                pass
+
+        if os.path.isdir(file):
+            raise IsADirectoryError(
+                f"""
+                Found an unexpected directory at {file}
+                help: create an empty file in its place.
+                """
+            )
 
 if __name__ == "__main__":
     main()

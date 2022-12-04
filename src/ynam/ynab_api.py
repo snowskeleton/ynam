@@ -2,6 +2,7 @@ from dataclasses import dataclass, asdict
 from inspect import signature as inspectSignature
 from json import dumps as dumpJson
 from json import loads as loadJson
+from typing import List, Dict
 
 from requests import Response, get, patch, post, put
 
@@ -403,7 +404,7 @@ class YNABAPI():
         since_date: str = None,
         type: str = None,
         budget_id: str = None,
-    ) -> dict[list[YNABTransaction]]:
+    ) -> Dict[str, List[YNABTransaction]]:
         """List transactions as YNABTransactions.
         
         Args:
@@ -415,7 +416,7 @@ class YNABAPI():
             last used budget and “default” can be used if default budget selection is enabled.
             If not specified, defaults to self.budget_id
         Returns:
-            dict[list[YNABTransaction]]: budget transactions
+            Dict[str, List[YNABTransaction]]: budget transactions
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/transactions'
@@ -431,7 +432,7 @@ class YNABAPI():
         self,
         transaction_id: str,
         budget_id: str = None,
-    ) -> dict[YNABTransaction]:
+    ) -> Dict[str, YNABTransaction]:
         """Single transaction
         
         Args:
@@ -441,7 +442,7 @@ class YNABAPI():
             If not specified, defaults to self.budget_id
 
         Returns:
-            dict[YNABTransaction]: requested transaction
+            Dict[str, YNABTransaction]: requested transaction
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/transactions/{transaction_id}'
@@ -454,7 +455,7 @@ class YNABAPI():
         budget_id: str = None,
         since_date: str = None,
         type: str = None,
-    ) -> dict[YNABTransaction]:
+    ) -> Dict[str, YNABTransaction]:
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/accounts/{account_id}/transactions'
         data = {
@@ -474,7 +475,7 @@ class YNABAPI():
         budget_id: str = None,
         since_date: str = None,
         type: str = None,
-    ) -> dict[YNABTransaction]:
+    ) -> Dict[str, YNABTransaction]:
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/transactions/{category_id}'
         data = {
@@ -494,7 +495,7 @@ class YNABAPI():
         budget_id: str = None,
         since_date: str = None,
         type: str = None,
-    ) -> dict[YNABTransaction]:
+    ) -> Dict[str, YNABTransaction]:
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/transactions/{payee_id}'
         data = {
@@ -513,7 +514,7 @@ class YNABAPI():
         transaction_id: str,
         updated_transaction: YNABTransaction,
         budget_id: str = None,
-    ) -> dict[YNABTransaction]:
+    ) -> Dict[str, YNABTransaction]:
         """Updates a single transaction
         
         Args:
@@ -524,7 +525,7 @@ class YNABAPI():
             updated_transaction (YNABTransaction): transaction with new values
 
         Returns:
-            dict[YNABTransaction]: updated transaction
+            Dict[str, YNABTransaction]: updated transaction
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/transactions/{transaction_id}'
@@ -534,14 +535,14 @@ class YNABAPI():
 
     def post_transactions(
         self,
-        transactions: YNABTransaction | list[YNABTransaction],
+        transactions: YNABTransaction or List[YNABTransaction],
         budget_id: str = None,
     ) -> dict:
         """Create a single transaction or multiple transactions.
         Scheduled transactions cannot be created on this endpoint.
 
         Args:
-            transactions (YNABTransaction | list[YNABTransaction]): either single transaction or list of transactions
+            transactions (YNABTransaction or List[YNABTransaction]): either single transaction or list of transactions
 
         Returns:
             dict: successfully created transactions
@@ -554,13 +555,13 @@ class YNABAPI():
 
     def post_import_transactions(
         self,
-        transactions: YNABTransaction | list[YNABTransaction],
+        transactions: YNABTransaction or List[YNABTransaction],
         budget_id: str = None,
     ):
         """Same as post_transactions, but sent to the Import endpoint.
 
         Args:
-            transactions (YNABTransaction | list[YNABTransaction]): _description_
+            transactions (YNABTransaction or List[YNABTransaction]): _description_
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/transactions/import'
@@ -570,13 +571,13 @@ class YNABAPI():
 
     def patch_transactions(
         self,
-        transactions: YNABTransaction | list[YNABTransaction],
+        transactions: YNABTransaction or List[YNABTransaction],
         budget_id: str = None,
     ):
         """Updates multiple transactions, by id or import_id.
 
         Args:
-            transactions (YNABTransaction | list[YNABTransaction]): either single transaction or list of transactions
+            transactions (YNABTransaction or List[YNABTransaction]): either single transaction or list of transactions
 
         Returns:
             dict: successfully updated transactions
@@ -609,7 +610,7 @@ class YNABAPI():
     def get_scheduled_transactions(
         self,
         budget_id: str = None,
-    ) -> dict[list]:
+    ) -> Dict[str, list]:
         """List scheduled transactions
 
         Args:
@@ -629,7 +630,7 @@ class YNABAPI():
         self,
         scheduled_transaction_id: str,
         budget_id: str = None,
-    ) -> dict[list]:
+    ) -> Dict[str, list]:
         """Single scheduled transaction
 
         Args:
@@ -639,7 +640,7 @@ class YNABAPI():
             If not specified, defaults to self.budget_id
 
         Returns:
-            dict[YNABTransaction]: a single scheduled transaction
+            Dict[str, YNABTransaction]: a single scheduled transaction
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/scheduled_transactions/{scheduled_transaction_id}'

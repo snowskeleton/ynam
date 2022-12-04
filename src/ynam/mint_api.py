@@ -2,7 +2,7 @@ import ast
 import inspect
 from dataclasses import dataclass
 
-import mintapi
+from mintapi import RESTClient, SeleniumBrowser
 
 from .ynam_parser import arg
 from .ynam_secrets import stash
@@ -38,28 +38,20 @@ class MintTransaction:
 class MintAPI():
 
     def __init__(self) -> None:
-        self.restClient = mintapi.RESTClient
-        self.browser = mintapi.SeleniumBrowser
+        self.restClient = RESTClient
+        self.browser = SeleniumBrowser
         self.cpath = arg('mint_cookies')
         self.keypath = arg('mint_api_key_file')
 
     def getXtns(self, start_date: str = None):
-        try:
-            client = self.restClient()
-            client.authorize(self.cookies(), self.key())
-            items = client.get_transaction_data()
-            items = [
-                MintTransaction.from_dict(item['fiData']) for item in items
-            ]
-            items = [item for item in items if item.date > start_date]
-            return items
-        except IsADirectoryError as e:
-            print(e)
-            print("""
-                  One or more expected files is a directory instead \n
-                  If you don't have a value to supply, simply create \n
-                  an empty file in the desired location \n
-                  """)
+        client = self.restClient()
+        client.authorize(self.cookies(), self.key())
+        items = client.get_transaction_data()
+        items = [
+            MintTransaction.from_dict(item['fiData']) for item in items
+        ]
+        items = [item for item in items if item.date > start_date]
+        return items
 
     def cookies(self):
         with open(self.cpath, 'r') as file:
