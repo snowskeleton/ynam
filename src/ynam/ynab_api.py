@@ -653,7 +653,7 @@ def _decode(httpResponse: Response) -> dict:
     try:
         return answer['data']
     except KeyError:
-        print(answer['error'])
+        raise Exception(answer['error'])
 
 
 def _oneOf(this, that):
