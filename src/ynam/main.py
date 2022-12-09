@@ -16,7 +16,7 @@ signal.signal(signal.SIGINT, signal_handler)
 
 
 def main():
-    handleEdgeCases()
+    validate_files()
     handleArgs()
     ynapi = YNABAPI(stash.ynab_api_key)
     ynapi.budget_id = stash.ynab_budget_id
@@ -53,7 +53,7 @@ def handleArgs():
         sys.exit(mapi.updateAuth())
 
 
-def handleEdgeCases():
+def validate_files():
     files = [
         arg('config_file'),
         arg('mint_api_key_file'),
