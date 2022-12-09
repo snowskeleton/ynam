@@ -39,14 +39,16 @@ Mint username:
 Mint password: 
 Mint mfa seed (optional): 
 YNAB API key: 
+YNAB budget...
+YNAB account... 
 ```
-and select the appropriate budget and account when prompted.
+ynam will login to YNAB and have you select from among the budgets and accounts listed
 
 To test it out, simple run
 ```
 ynam
 ```
-The first run can take up to a minute to complete. (more on that [here]())
+The first run can take up to a minute to complete. <!-- (more on that [here]()) -->
 ## Docker 
 To run ynam in docker, you'll need to do a bit of setup.
 
