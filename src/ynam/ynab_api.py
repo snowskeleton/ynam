@@ -396,7 +396,6 @@ class YNABAPI():
         url = f'/budgets/{budget_id}/months/{month}'
         return _decode(self._get(url=url))['month']
 
-
 # Transactions
 
     def get_transactions(
@@ -406,7 +405,7 @@ class YNABAPI():
         budget_id: str = None,
     ) -> Dict[str, List[YNABTransaction]]:
         """List transactions as YNABTransactions.
-        
+
         Args:
             since_date (str, optional): If specified, only transactions on or after this date will be included.
             The date should be ISO formatted (e.g. 2016-12-30).
@@ -434,7 +433,7 @@ class YNABAPI():
         budget_id: str = None,
     ) -> Dict[str, YNABTransaction]:
         """Single transaction
-        
+
         Args:
             transaction_id (str): The id of the transaction
             budget_id (str, optional): The id of the budget. “last-used” can be used to specify the
@@ -516,7 +515,7 @@ class YNABAPI():
         budget_id: str = None,
     ) -> Dict[str, YNABTransaction]:
         """Updates a single transaction
-        
+
         Args:
             transaction_id (str): The id of the transaction
             budget_id (str, optional): The id of the budget. “last-used” can be used to specify the
