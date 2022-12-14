@@ -24,10 +24,10 @@ class YNABTransaction:
     subtransactions: list = None
     cleared: str = 'cleared'
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.payee_name = self.payee_name[:100]
 
-    def asdict(self):
+    def asdict(self) -> dict:
         return asdict(self)
 
     @classmethod
@@ -48,21 +48,21 @@ class YNABAPI():
         }
         self.budget_id: str = None
 
-    def _patch(self, url: str, **kwargs):
+    def _patch(self, url: str, **kwargs) -> Response:
         return patch(self.uri + url, **kwargs, headers=self.headers)
 
-    def _post(self, url: str, **kwargs):
+    def _post(self, url: str, **kwargs) -> Response:
         return post(self.uri + url, **kwargs, headers=self.headers)
 
-    def _put(self, url: str, **kwargs):
+    def _put(self, url: str, **kwargs) -> Response:
         return put(self.uri + url, **kwargs, headers=self.headers)
 
-    def _get(self, url: str, **kwargs):
+    def _get(self, url: str, **kwargs) -> Response:
         return get(self.uri + url, **kwargs, headers=self.headers)
 
 # User
 
-    def get_user(self):
+    def get_user(self) -> dict:
         """Returns authenticated user information
         """
         return _decode(self._get(f'/user')['user'])
@@ -172,7 +172,7 @@ class YNABAPI():
 
 # Categories
 
-    def get_categories(self, budget_id: str = None):
+    def get_categories(self, budget_id: str = None) -> dict:
         """List categories
 
         Amounts (budgeted, activity, balance, etc.) are specific to the current budget month (UTC).
@@ -556,7 +556,7 @@ class YNABAPI():
         self,
         transactions: YNABTransaction or List[YNABTransaction],
         budget_id: str = None,
-    ):
+    ) -> dict:
         """Same as post_transactions, but sent to the Import endpoint.
 
         Args:
@@ -572,7 +572,7 @@ class YNABAPI():
         self,
         transactions: YNABTransaction or List[YNABTransaction],
         budget_id: str = None,
-    ):
+    ) -> dict:
         """Updates multiple transactions, by id or import_id.
 
         Args:
