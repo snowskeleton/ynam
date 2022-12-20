@@ -51,7 +51,7 @@ add('--days',
     '-d',
     dest='days',
     action='store',
-    type=lambda d: (t.today() - delta(days=int(d))).strftime("%y-%m-%d"),
+    type=lambda d: (t.today() - delta(days=int(d))).strftime("%Y-%m-%d"),
     default='10',
     help='Cutoff (in days) for how far back to search'
     'A value of 0 gets transactions from today only')
