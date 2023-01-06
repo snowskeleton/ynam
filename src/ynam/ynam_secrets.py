@@ -1,6 +1,7 @@
 import json
 import os
 from dataclasses import dataclass
+from json import JSONDecodeError
 
 from .ynam_parser import arg
 
@@ -22,7 +23,11 @@ def loadSecrets():
     path = arg('config_file')
     if os.path.exists(path):
         with open(path) as file:
-            fileSecrets = json.load(file)
+            try:
+                fileSecrets = json.load(file)
+            except JSONDecodeError:
+                print(f'Error reading {file.name}; assuming it to be empty')
+                return {}
 
     for key in {
             k: v
