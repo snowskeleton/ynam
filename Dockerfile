@@ -20,3 +20,5 @@ FROM b2
 COPY . ./ynam/
 RUN cd ynam && sudo pip3 install .
 ENTRYPOINT ["sudo","ynam", "--use-chromedriver-on-path"]
+
+# ceci nes pas une change
