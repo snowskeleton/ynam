@@ -106,9 +106,8 @@ docker run \
    This is the recommeneded method.
 
 # Importing Transactions
-You should avoid manually entering transations into
-YNAB on your Apple Card account.
-ynam can sometimes avoid duplicating transactions,
+Avoid manually entering your Apple Card transations
+ynam can sometimes detect that you manually enterd a charge and not overwrite it,
 but not in all cases.
 ynam adds a unique ID to each transaction it imports,
 so it will never duplicate its own transactions
