@@ -1,5 +1,7 @@
 # Note
-The current version of mintapi/mintapi available from pypi is not compatible with this version of ynam. Install manually from snowskeleton/mintapi. Clone, navigate inside, and run `pip install --upgrade .`
+The current version of mintapi/mintapi available from pypi is not compatible with this version of ynam.
+Install manually from [snowskeleton/mintapi](https://github.com/snowskeleton/mintapi).
+Clone, navigate inside, and run `pip install --upgrade .`
 
 
 # Abstract
