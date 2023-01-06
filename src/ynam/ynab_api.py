@@ -648,15 +648,14 @@ class YNABAPI():
 
 
 def _decode(httpResponse: Response) -> dict:
-    answer = loadJson(httpResponse.content.decode('utf-8'))
-    try:
+    answer: dict = loadJson(httpResponse.content.decode('utf-8'))
+    if 'data' in answer.keys():
         return answer['data']
-    except KeyError:
-        raise Exception(answer['error'])
+    raise Exception(answer['error'])
 
 
 def _oneOf(this, that):
-    return that if this == None else this
+    return that if this is None else this
 
 
 _account_types = [

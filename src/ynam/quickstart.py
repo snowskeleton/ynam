@@ -13,7 +13,7 @@ def safeInput(cap):
         try:
             if int(ans) <= cap:
                 return int(ans)
-        except:
+        except:  # noqa
             # failed to convert user input to integer. start over
             continue
 
@@ -21,7 +21,7 @@ def safeInput(cap):
 def usersChoice(items):
     index = 0
     if len(items) == 1:
-        print(f"{items[0]['name']}")
+        print(f"{items[index]['name']}")
         print('Default to only option')
         return items[index]
     else:
@@ -41,7 +41,8 @@ def run():
     updateStash('ynab_api_key', input('YNAB API key: ').strip())
     ynapi = YNABAPI(stash.ynab_api_key)
     updateStash('ynab_budget_id', usersChoice(ynapi.get_budgets())['id'])
-    updateStash('ynab_account_id', usersChoice(ynapi.get_accounts())['id'])
+    updateStash('ynab_account_id', usersChoice(
+        ynapi.get_accounts(stash.ynab_budget_id))['id'])
 
 
 if __name__ == "__main__":
