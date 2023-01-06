@@ -5,6 +5,7 @@ from json import loads as loadJson
 from typing import List, Dict
 
 from requests import Response, get, patch, post, put
+# flake8: noqa
 
 
 @dataclass
