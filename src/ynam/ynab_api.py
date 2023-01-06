@@ -41,7 +41,7 @@ class YNABTransaction:
 class YNABAPI():
 
     def __init__(self, api_key: str) -> None:
-        self.uri = 'https://api.youneedabudget.com/v1/'
+        self.uri = 'https://api.youneedabudget.com/v1'
         self.headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}"
