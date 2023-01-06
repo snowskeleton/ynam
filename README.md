@@ -113,6 +113,43 @@ but not in all cases.
 ynam adds a unique ID to each transaction it imports,
 so it will never duplicate its own transactions
 
+## Structure of config file
+ynam requires a few pieces of info to do its job.
+Specifically, it requires:
+- YNAB API key
+   - This comes from your YNAB account's [developer settings](https://app.youneedabudget.com/settings/developer),
+- Selected YNAB budget
+   - Most people will only have a single budget, which ynam will select by default.
+   If you have more, the quickstart process will prompt you to select one.
+- Apple Card account ID
+   - The specific ID of your Apple credit card.
+   This is unique to the budget selected above.
+   If you want to use ynam to import transactions from multiple Apple cards or into multiple YNAB budgets,
+   specify each combination with sparate credentials using the `--config-file` option.
+- Mint
+   - Username
+   - Password
+   - MFA soft token seed
+      - it is HIGHLY RECOMMENDED that you provide this value.
+      Not only is it the most secure option,
+      but it's also the least fragile.
+      Opting to not use MFA,
+      or to use email or SMS MFA,
+      will increase the amount of login failures you experience.
+      Setup is as follows:
+         - Go to your 
+         [Intuit account MFA settings](https://accounts.intuit.com/app/account-manager/security/mfa)
+         (login if necessary)
+         - If you already have an MFA app linked to your account,
+         go through the process of unlinking it
+         - Start adding an authenticator app of your choice,
+         but DO NOT click all the way through yet.
+         - You will receive a QR code,
+         as well as a short string representation of that QR code.
+         This is your MFA seed.
+         Save it somewhere safe (password manager, lockbox, etc)
+         before you finish linking the app.
+
 # Closing
 I hope you find ynam useful!
 
