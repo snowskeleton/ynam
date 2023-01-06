@@ -118,4 +118,4 @@ Feel free to open an Issue or Pull Request
 with any new ideas or problems.
 
 ## Disclaimer
-This project is neither associated with, nor endorsed by, YNAB, Mint, or Apple. All rights belong to original creators.
+This project is neither associated with, nor endorsed by, YNAB, Intuit (or its subsidiary Mint), or Apple. All rights belong to original creators.
