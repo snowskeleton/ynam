@@ -675,7 +675,8 @@ def _decode(httpResponse: Response) -> dict:
     answer: dict = loadJson(httpResponse.content.decode('utf-8'))
     if 'data' in answer.keys():
         return answer['data']
-    raise Exception(answer['error'])
+    else:
+        raise Exception(answer['error'])
 
 
 def _oneOf(this, that):
