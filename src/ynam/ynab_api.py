@@ -31,7 +31,7 @@ class YNABTransaction:
         if len(self.payee_name) >= 100:
             shorter_name = self.payee_name[:100]
             logger.debug(
-                'Payee name "{self.payee_name}" too long. Shortened to "{shorter_name}')
+                f'Payee name "{self.payee_name}" too long. Shortened to "{shorter_name}')
             self.payee_name = shorter_name
 
     def asdict(self) -> dict:
@@ -58,15 +58,17 @@ class YNABAPI():
         logger.debug(f'YNABAPI headers: {self.headers}')
 
     def __call(self, call: Callable, url: str, **kwargs) -> dict:
-        logger.debug(f'sending {call.__name__} to url {url}')
         longstr = [f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
         longstr = ' '.join(longstr)
-        logger.debug(f"using kwargs: {longstr if len(longstr) > 0 else None}")
+        msg = f'Sending {call.__name__.upper()} to endpoint {url} '
+        msg += f"using kwargs: {longstr if len(longstr) > 0 else None}"
+        logger.debug(msg)
 
         results: Response = call(self.uri + url, **kwargs, headers=self.headers)
         jsonResults: dict = loadJson(results.content.decode('utf-8'))
         if 'data' in jsonResults.keys():
-            logger.debug('Call successful')
+            logger.debug('Call successful!')
+            logger.debug(jsonResults)
             return jsonResults['data']
         else:
             logger.warn(
@@ -74,19 +76,15 @@ class YNABAPI():
             raise Exception(jsonResults['error'])
 
     def _patch(self, url: str, **kwargs) -> dict:
-        logger.debug('Sending PATCH')
         return self.__call(patch, url, **kwargs)
 
     def _post(self, url: str, **kwargs) -> dict:
-        logger.debug('Sending POST')
         return self.__call(post, url, **kwargs)
 
     def _put(self, url: str, **kwargs) -> dict:
-        logger.debug('Sending PUT')
         return self.__call(put, url, **kwargs)
 
     def _get(self, url: str, **kwargs) -> dict:
-        logger.debug('Sending GET')
         return self.__call(get, url, **kwargs)
 
 # User

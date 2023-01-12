@@ -34,10 +34,12 @@ def main():
     ]
     nabs = [mint.asYNAB() for mint in mints if mint.id not in ydeez]
     nabs = [nab.asdict() for nab in nabs]
-    if not arg('dryrun') and len(nabs) > 0:
+    if arg('dryrun'):
+        sys.exit(print(nabs))
+
+    if len(nabs) > 0:
         result = ynapi.post_transactions(nabs)
-        if arg('verbose'):
-            print(result)
+        logger.info(result)
 
 
 def handleArgs():
@@ -62,7 +64,7 @@ def validate_files():
         arg('session_file'),
     ]
     for file in files:
-        logger.debug(f'Checking for {file}')
+        logger.debug(f'Validating {file}...')
         if not os.path.exists(file):
             logger.debug(
                 f'{file} does not exist; created empty file in its place.')

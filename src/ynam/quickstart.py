@@ -26,10 +26,12 @@ def usersChoice(items):
     else:
         for item in items:
             print(items.index(item) + 1, item['name'])
-        index = int(safeInput(len(items))) - 1
+        selection = safeInput(len(items))
+        item = items[int(selection) - 1]
+        logger.debug(f'Selected {item} at position {selection}')
 
-        print('selected:', items[index]['name'])
-        return items[index]
+        print('selected:', item['name'])
+        return item
 
 
 def run():
