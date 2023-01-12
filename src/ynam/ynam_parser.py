@@ -139,9 +139,13 @@ add('--ynab-api-key-literal',
 
 args = parser.parse_args()
 
+logging.basicConfig(level=args.loglevel)
+handle = 'ynam'
+logger = logging.getLogger(handle)
+
 
 def arg(key):
-    logging.debug(f'Fetch for key: {key}')
+    logger.debug(f'Fetch for key: {key}')
     val = vars(args)[key]
-    logging.debug(f'Fetched vaule: {val}')
+    logger.debug(f'Fetched vaule: {val}')
     return val

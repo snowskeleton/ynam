@@ -1,8 +1,8 @@
-import logging
 from getpass import getpass
 
 from .ynab_api import YNABAPI
 from .ynam_secrets import stash, updateStash
+from .ynam_parser import logger
 
 
 def safeInput(cap):

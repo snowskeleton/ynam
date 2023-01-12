@@ -1,10 +1,9 @@
-import logging
 import json
 import os
 from dataclasses import dataclass
 from json import JSONDecodeError
 
-from .ynam_parser import arg
+from .ynam_parser import arg, logger
 
 
 @dataclass
@@ -42,13 +41,14 @@ def loadSecrets():
 def updateStash(key, value):
     secrets = {**loadSecrets()}
     if value == '':
-        logging.info(
+        logger.info(
             f'Empty value for key: {key}. Maintaining current value: {secrets[key]}')  # noqa
+        return
 
-    logging.debug('Updating key: {key} to value: {value}')
+    logger.debug(f'Updating key: {key} to value: {value}')
     secrets[key] = value
     with open(arg('config_file'), 'w+') as file:
-        logging.debug('Persisting to disk...')
+        logger.debug('Persisting to disk...')
         file.write(json.dumps(secrets, indent=2))
 
 
