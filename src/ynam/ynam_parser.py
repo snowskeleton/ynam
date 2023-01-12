@@ -1,4 +1,5 @@
 import argparse
+import logging
 from datetime import datetime as t
 from datetime import timedelta as delta
 from pathlib import Path, PurePath
@@ -132,4 +133,7 @@ args = parser.parse_args()
 
 
 def arg(key):
-    return vars(args)[key]
+    logging.debug(f'Fetch for key: {key}')
+    val = vars(args)[key]
+    logging.debug(f'Fetched vaule: {val}')
+    return val

@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, asdict
 from inspect import signature as inspectSignature
 from json import dumps as dumpJson
@@ -26,7 +27,11 @@ class YNABTransaction:
     cleared: str = 'cleared'
 
     def __post_init__(self) -> None:
-        self.payee_name = self.payee_name[:100]
+        if len(self.payee_name) >= 100:
+            shorter_name = self.payee_name[:100]
+            logging.debug(
+                'Payee name "{self.payee_name}" too long. Shortened to "{shorter_name}')
+            self.payee_name = shorter_name
 
     def asdict(self) -> dict:
         return asdict(self)
@@ -48,17 +53,35 @@ class YNABAPI():
             "Authorization": f"Bearer {api_key}"
         }
         self.budget_id: str = None
+        logging.debug('YNABAPI uri:', self.uri)
+        logging.debug('YNABAPI headers:', self.headers)
 
     def _patch(self, url: str, **kwargs) -> Response:
+        logging.debug('sending PATCH request to', url)
+        stringyKwargs = [
+            f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
+        logging.debug('using kwargs', *stringyKwargs)
         return patch(self.uri + url, **kwargs, headers=self.headers)
 
     def _post(self, url: str, **kwargs) -> Response:
+        logging.debug('sending POST request to', url)
+        stringyKwargs = [
+            f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
+        logging.debug('using kwargs', *stringyKwargs)
         return post(self.uri + url, **kwargs, headers=self.headers)
 
     def _put(self, url: str, **kwargs) -> Response:
+        logging.debug('sending PUT request to', url)
+        stringyKwargs = [
+            f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
+        logging.debug('using kwargs', *stringyKwargs)
         return put(self.uri + url, **kwargs, headers=self.headers)
 
     def _get(self, url: str, **kwargs) -> Response:
+        logging.debug('sending GET request to', url)
+        stringyKwargs = [
+            f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
+        logging.debug('using kwargs', *stringyKwargs)
         return get(self.uri + url, **kwargs, headers=self.headers)
 
 # User

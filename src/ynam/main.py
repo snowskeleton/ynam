@@ -1,6 +1,7 @@
 import signal
 import sys
 import os
+import logging
 
 from .mint_api import MintAPI
 from .ynab_api import YNABAPI
@@ -16,6 +17,7 @@ signal.signal(signal.SIGINT, signal_handler)
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
     validate_files()
     handleArgs()
     ynapi = YNABAPI(stash.ynab_api_key)
@@ -62,7 +64,10 @@ def validate_files():
         arg('session_file'),
     ]
     for file in files:
+        logging.debug(f'Checking for {file}')
         if not os.path.exists(file):
+            logging.debug(
+                f'{file} does not exist; created empty file in its place.')
             with open(file, 'w'):
                 pass
 
@@ -73,6 +78,7 @@ def validate_files():
                 help: create an empty file in its place.
                 """
             )
+
 
 if __name__ == "__main__":
     main()

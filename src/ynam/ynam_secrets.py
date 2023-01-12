@@ -1,3 +1,4 @@
+import logging
 import json
 import os
 from dataclasses import dataclass
@@ -39,11 +40,16 @@ def loadSecrets():
 
 
 def updateStash(key, value):
-    if value != '':
-        secrets = {**loadSecrets()}
-        secrets[key] = value
-        with open(arg('config_file'), 'w+') as file:
-            file.write(json.dumps(secrets, indent=2))
+    if value == '':
+        logging.info(
+            f'Empty value for key: {key}. Maintaining current value: {secrets[key]}')  # noqa
+
+    logging.debug('Updating key: {key} to value: {value}')
+    secrets = {**loadSecrets()}
+    secrets[key] = value
+    with open(arg('config_file'), 'w+') as file:
+        logging.debug('Persisting to disk...')
+        file.write(json.dumps(secrets, indent=2))
 
 
 stash = Secrets(**loadSecrets())
