@@ -8,48 +8,58 @@ from .ynam_secrets import stash, updateStash
 def safeInput(cap):
     """guarantees int from user input
     """
-    logging.debug(f'Querying user for number less than {cap + 1}')
-    ans = int(input(f'Enter 0–{cap}: '))
+    logger.debug(f'Querying user for number {cap} or less')
+    ans = int(input(f'Enter 1–{cap}: '))
     if ans and ans <= cap:
-        logging.debug(f'User entered: {ans}')
+        logger.debug(f'User entered: {ans}')
         return ans
     else:
-        logging.info('Supplied value outside of range.')
+        logger.info('Supplied value outside of range.')
         return safeInput(cap)
 
 
 def usersChoice(items):
-    index = 0
     if len(items) == 1:
-        print(f"{items[index]['name']}")
+        print(f"{items[0]['name']}")
         print('Default to only option')
-        return items[index]
+        return items[0]
     else:
         for item in items:
-            print(items.index(item), item['name'])
-        index = int(safeInput(len(items) - 1))
+            print(items.index(item) + 1, item['name'])
+        index = int(safeInput(len(items))) - 1
 
         print('selected:', items[index]['name'])
         return items[index]
 
 
 def run():
-    logging.debug('Asking for mint_username')
-    updateStash('mint_username', input('Mint username: ').strip())
-    logging.debug('Asking for mint_password')
-    updateStash('mint_password', getpass('Mint password: '))
-    logging.debug('Asking for mint_mfa_seed')
-    updateStash('mint_mfa_seed', getpass('Mint mfa seed (optional): '))
+    logger.debug('Asking for mint_username')
+    username = input('Mint username: ')
+    updateStash('mint_username', username.strip())
 
-    logging.debug('Asking for ynab_api_key')
-    updateStash('ynab_api_key', input('YNAB API key: ').strip())
-    logging.debug('Initializing YNAB api.')
+    logger.debug('Asking for mint_password')
+    password = getpass('Mint password: ')
+    updateStash('mint_password', password)
+
+    logger.debug('Asking for mint_mfa_seed')
+    seed = getpass('Mint mfa seed (optional): ')
+    updateStash('mint_mfa_seed', seed)
+
+    logger.debug('Asking for ynab_api_key')
+    api_key = input('YNAB API key: ')
+    updateStash('ynab_api_key', api_key.strip())
+    logger.debug('Initializing YNAB api.')
     ynapi = YNABAPI(stash.ynab_api_key)
-    logging.debug('Asking for ynab_budget_id')
-    updateStash('ynab_budget_id', usersChoice(ynapi.get_budgets())['id'])
-    logging.debug('Asking for ynab_account_id')
-    updateStash('ynab_account_id', usersChoice(
-        ynapi.get_accounts(stash.ynab_budget_id))['id'])
+
+    logger.debug('Asking for ynab_budget_id')
+    budgets = ynapi.get_budgets()
+    budget_id = usersChoice(budgets)['id']
+    updateStash('ynab_budget_id', budget_id)
+
+    logger.debug('Asking for ynab_account_id')
+    accounts = ynapi.get_accounts(stash.ynab_budget_id)
+    acc_id = usersChoice(accounts)['id']
+    updateStash('ynab_account_id', acc_id)
 
 
 if __name__ == "__main__":
