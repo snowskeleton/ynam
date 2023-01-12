@@ -58,30 +58,22 @@ class YNABAPI():
 
     def _patch(self, url: str, **kwargs) -> Response:
         logging.debug('sending PATCH request to', url)
-        stringyKwargs = [
-            f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
-        logging.debug('using kwargs', *stringyKwargs)
+        logging.debug('using kwargs', *__stringify(**kwargs))
         return patch(self.uri + url, **kwargs, headers=self.headers)
 
     def _post(self, url: str, **kwargs) -> Response:
         logging.debug('sending POST request to', url)
-        stringyKwargs = [
-            f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
-        logging.debug('using kwargs', *stringyKwargs)
+        logging.debug('using kwargs', *__stringify(**kwargs))
         return post(self.uri + url, **kwargs, headers=self.headers)
 
     def _put(self, url: str, **kwargs) -> Response:
         logging.debug('sending PUT request to', url)
-        stringyKwargs = [
-            f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
-        logging.debug('using kwargs', *stringyKwargs)
+        logging.debug('using kwargs', *__stringify(**kwargs))
         return put(self.uri + url, **kwargs, headers=self.headers)
 
     def _get(self, url: str, **kwargs) -> Response:
         logging.debug('sending GET request to', url)
-        stringyKwargs = [
-            f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
-        logging.debug('using kwargs', *stringyKwargs)
+        logging.debug('using kwargs', *__stringify(**kwargs))
         return get(self.uri + url, **kwargs, headers=self.headers)
 
 # User
@@ -702,3 +694,7 @@ _account_types = [
 
 class InvalidAccountType(Exception):
     pass
+
+
+def __stringify(**kwargs) -> list:
+    return [f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
