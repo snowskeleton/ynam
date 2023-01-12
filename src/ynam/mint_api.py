@@ -43,7 +43,7 @@ class MintAPI():
         self.cpath = arg('mint_cookies')
         self.keypath = arg('mint_api_key_file')
 
-    def getXtns(self, start_date: str = None):
+    def get_transactions(self, start_date: str = None):
         client = self.restClient()
         client.authorize(self.cookies(), self.key())
         items = client.get_transaction_data()

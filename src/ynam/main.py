@@ -18,27 +18,31 @@ signal.signal(signal.SIGINT, signal_handler)
 def main():
     validate_files()
     handleArgs()
-    ynapi = YNABAPI(stash.ynab_api_key)
-    ynapi.budget_id = stash.ynab_budget_id
-    mapi = MintAPI()
 
+    mint_api = MintAPI()
     try:
-        mints = mapi.getXtns(start_date=arg('days'))
+        mint_transactions = mint_api.get_transactions(start_date=arg('days'))
     except Exception:
-        mapi.updateAuth()
-        mints = mapi.getXtns(start_date=arg('days'))
+        mint_api.updateAuth()
+        mint_transactions = mint_api.get_transactions(start_date=arg('days'))
 
-    ydeez = [
-        y.import_id
-        for y in ynapi.get_account_transactions(stash.ynab_account_id)
-    ]
-    nabs = [mint.asYNAB() for mint in mints if mint.id not in ydeez]
-    nabs = [nab.asdict() for nab in nabs]
+    ynab_api = YNABAPI(stash.ynab_api_key)
+    ynab_api.budget_id = stash.ynab_budget_id
+    ynab_transactions = ynab_api.get_account_transactions(
+        stash.ynab_account_id)
+
+    ynab_ids = [y.import_id for y in ynab_transactions]
+    ynab_ids = [
+        mint.asYNAB() for mint in mint_transactions if mint.id not in ynab_ids]
+    ynab_ids = [nab.asdict() for nab in ynab_ids]
+
     if arg('dryrun'):
-        sys.exit(print(nabs))
+        sys.exit(print(ynab_ids))
 
-    if len(nabs) > 0:
-        result = ynapi.post_transactions(nabs)
+    if len(ynab_ids) > 0:
+        result = ynab_api.post_transactions(ynab_ids)
+        # TODO: parse through the results a bit to give better data.
+        # e.g., X many transactions, across N days, etc.
         logger.info(result)
 
 
