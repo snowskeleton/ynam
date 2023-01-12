@@ -17,7 +17,7 @@ signal.signal(signal.SIGINT, signal_handler)
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=arg('loglevel'))
     validate_files()
     handleArgs()
     ynapi = YNABAPI(stash.ynab_api_key)

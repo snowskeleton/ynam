@@ -56,6 +56,12 @@ add('--days',
     default='10',
     help='Cutoff (in days) for how far back to search'
     'A value of 0 gets transactions from today only')
+add('--debug',
+    help="Print lots of debugging statements",
+    action="store_const",
+    dest="loglevel",
+    const=logging.DEBUG,
+    default=logging.WARNING,)
 add('--deviate',
     dest='deviate',
     action='store_true',
@@ -114,10 +120,12 @@ add('--update-mint-auth',
     help='Grab new api_key and cookies from Selinum session, then exit')
 add('--use-chromedriver-on-path',
     action='store_true',
-    help=
-    'Whether to use the chromedriver on PATH, instead of downloading a local copy.'
-    )
-add('--verbose', action='store_true', help='Enables console output')
+    help='Use the chromedriver on PATH, instead of newly downloaded copy.')
+add('--verbose',
+    help="Enable console output",
+    action="store_const",
+    dest="loglevel",
+    const=logging.INFO,)
 add('--version',
     '-v',
     action='version',
