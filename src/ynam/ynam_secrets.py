@@ -40,12 +40,12 @@ def loadSecrets():
 
 
 def updateStash(key, value):
+    secrets = {**loadSecrets()}
     if value == '':
         logging.info(
             f'Empty value for key: {key}. Maintaining current value: {secrets[key]}')  # noqa
 
     logging.debug('Updating key: {key} to value: {value}')
-    secrets = {**loadSecrets()}
     secrets[key] = value
     with open(arg('config_file'), 'w+') as file:
         logging.debug('Persisting to disk...')
