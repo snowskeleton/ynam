@@ -77,8 +77,9 @@ add('--graphics',
     dest='headless',
     action='store_false',
     help='Flag to run non-headless. Used to input 2FA codes')
-add('--mfa-seed',
-    dest='mint_mfa_seed',
+add('--secrets-file',
+    '-c',
+    dest='secrets_file',
     action='store',
     default=None,
     help='Mint MFA token seed')

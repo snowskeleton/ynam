@@ -62,7 +62,7 @@ def handleArgs():
 
 def validate_files():
     files = [
-        arg('config_file'),
+        arg('secrets_file'),
         arg('mint_api_key_file'),
         arg('mint_cookies'),
         arg('chromedriver'),
