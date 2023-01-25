@@ -63,7 +63,7 @@ class MintAPI():
 
     def updateAuth(self):
         stash = get_stash()
-        bowser = self.browser(
+        browser = self.browser(
             email=stash.mint_username,
             password=stash.mint_password,
             mfa_method='soft-token',
@@ -74,7 +74,7 @@ class MintAPI():
             wait_for_sync_timeout=10,
         )
         with open(arg('mint_cookies'), 'w+') as file:
-            file.write(str(bowser._get_cookies()))
+            file.write(str(browser._get_cookies()))
 
         with open(arg('mint_api_key_file'), 'w+') as file:
-            file.write(str(bowser._get_api_key_header()))
+            file.write(str(browser._get_api_key_header()))
