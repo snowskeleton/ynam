@@ -20,6 +20,8 @@ def migrate_v0_3_4_0():
         (path('.ynam_mintapi_session'), SESSION),
         (path('.ynamrc'), SECRETS_FILE),
     ]
+    if not os.path.exists(basedir):
+        os.makedirs(basedir)
     for file in old_file_paths:
         if os.path.exists(file[0]):
             shutil.move(file[0], file[1])
