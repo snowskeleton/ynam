@@ -1,7 +1,7 @@
 from getpass import getpass
 
 from .ynab_api import YNABAPI
-from .ynam_secrets import stash, updateStash
+from .ynam_secrets import get_stash, updateStash
 from .ynam_parser import logger
 
 
@@ -35,6 +35,7 @@ def usersChoice(items):
 
 
 def run():
+    # Mint
     logger.debug('Asking for mint_username')
     username = input('Mint username: ')
     updateStash('mint_username', username.strip())
@@ -47,11 +48,12 @@ def run():
     seed = getpass('Mint mfa seed (optional): ')
     updateStash('mint_mfa_seed', seed)
 
+    # YNAB
     logger.debug('Asking for ynab_api_key')
     api_key = input('YNAB API key: ')
     updateStash('ynab_api_key', api_key.strip())
     logger.debug('Initializing YNAB api.')
-    ynapi = YNABAPI(stash.ynab_api_key)
+    ynapi = YNABAPI(get_stash().ynab_api_key)
 
     logger.debug('Asking for ynab_budget_id')
     budgets = ynapi.get_budgets()
@@ -59,7 +61,7 @@ def run():
     updateStash('ynab_budget_id', budget_id)
 
     logger.debug('Asking for ynab_account_id')
-    accounts = ynapi.get_accounts(stash.ynab_budget_id)
+    accounts = ynapi.get_accounts(get_stash().ynab_budget_id)
     acc_id = usersChoice(accounts)['id']
     updateStash('ynab_account_id', acc_id)
 

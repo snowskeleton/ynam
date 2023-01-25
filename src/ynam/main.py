@@ -5,7 +5,7 @@ import os
 from .mint_api import MintAPI
 from .ynab_api import YNABAPI
 from .ynam_parser import arg, logger
-from .ynam_secrets import stash
+from .ynam_secrets import get_stash
 
 
 def signal_handler(sig, frame):
@@ -26,6 +26,7 @@ def main():
         mint_api.updateAuth()
         mint_transactions = mint_api.get_transactions(start_date=arg('days'))
 
+    stash = get_stash()
     ynab_api = YNABAPI(stash.ynab_api_key)
     ynab_api.budget_id = stash.ynab_budget_id
     ynab_transactions = ynab_api.get_account_transactions(
@@ -47,21 +48,26 @@ def main():
 
 
 def handleArgs():
+    if arg('deviate'):
+        from .ynam_parser import migrate_v0_3_4_0
+        migrate_v0_3_4_0()
     if arg('print_ynab_transactions'):
-        sys.exit(YNABAPI(stash.ynab_api_key).print_transactions())
+        sys.exit(YNABAPI(get_stash().ynab_api_key).print_transactions())
     if arg('quickstart'):
         from .quickstart import run
         sys.exit(run())
     if arg('blab'):
-        sys.exit(print(stash))
+        sys.exit(print(get_stash()))
     if arg('update_auth'):
         mapi = MintAPI()
         sys.exit(mapi.updateAuth())
 
 
 def validate_files():
+    from .ynam_parser import migrate_v0_3_4_0
+    migrate_v0_3_4_0()
     files = [
-        arg('config_file'),
+        arg('secrets_file'),
         arg('mint_api_key_file'),
         arg('mint_cookies'),
         arg('chromedriver'),

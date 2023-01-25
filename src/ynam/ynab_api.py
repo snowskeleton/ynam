@@ -47,6 +47,11 @@ class YNABTransaction:
 
 class YNABAPI():
     def __init__(self, api_key: str) -> None:
+        if api_key is None:
+            raise ValueError(
+                'Attempted to initialize YNAB API without API key.'
+            )
+
         self.uri = 'https://api.youneedabudget.com/v1'
         self.headers = {
             "Content-Type": "application/json",
