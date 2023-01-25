@@ -18,7 +18,7 @@ class Secrets():
     mint_mfa_seed: str = None
 
 
-def _loadSecrets():
+def _loadSecrets() -> dict:
     fileSecrets = {}
     path = arg('secrets_file')
     if os.path.exists(path):
@@ -26,7 +26,8 @@ def _loadSecrets():
             try:
                 fileSecrets = json.load(file)
             except JSONDecodeError:
-                print(f'Error reading {file.name}; assuming it to be empty')
+                logger.warn(
+                    f'Error reading {file.name}; assuming it to be empty')
                 return {}
 
     for key in {
@@ -38,7 +39,7 @@ def _loadSecrets():
     return fileSecrets
 
 
-def updateStash(key, value):
+def updateStash(key, value) -> None:
     secrets = {**_loadSecrets()}
     logger.debug(
         'Secrets prior to update:\n'
@@ -61,5 +62,5 @@ def updateStash(key, value):
     )
 
 
-def get_stash():
+def get_stash() -> Secrets:
     return Secrets(**_loadSecrets())

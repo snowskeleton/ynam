@@ -48,6 +48,9 @@ def main():
 
 
 def handleArgs():
+    if arg('deviate'):
+        from .ynam_parser import migrate_v0_3_4_0
+        migrate_v0_3_4_0()
     if arg('print_ynab_transactions'):
         sys.exit(YNABAPI(get_stash().ynab_api_key).print_transactions())
     if arg('quickstart'):
@@ -61,6 +64,8 @@ def handleArgs():
 
 
 def validate_files():
+    from .ynam_parser import migrate_v0_3_4_0
+    migrate_v0_3_4_0()
     files = [
         arg('secrets_file'),
         arg('mint_api_key_file'),

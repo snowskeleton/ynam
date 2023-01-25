@@ -35,6 +35,7 @@ def usersChoice(items):
 
 
 def run():
+    # Mint
     logger.debug('Asking for mint_username')
     username = input('Mint username: ')
     updateStash('mint_username', username.strip())
@@ -47,6 +48,7 @@ def run():
     seed = getpass('Mint mfa seed (optional): ')
     updateStash('mint_mfa_seed', seed)
 
+    # YNAB
     logger.debug('Asking for ynab_api_key')
     api_key = input('YNAB API key: ')
     updateStash('ynab_api_key', api_key.strip())

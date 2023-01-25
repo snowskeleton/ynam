@@ -73,8 +73,10 @@ class MintAPI():
             wait_for_sync=False,
             wait_for_sync_timeout=10,
         )
+        cookies = browser._get_cookies()
         with open(arg('mint_cookies'), 'w+') as file:
-            file.write(str(browser._get_cookies()))
+            file.write(str(cookies))
 
+        api_key = browser._get_api_key_header()
         with open(arg('mint_api_key_file'), 'w+') as file:
-            file.write(str(browser._get_api_key_header()))
+            file.write(str(api_key))
