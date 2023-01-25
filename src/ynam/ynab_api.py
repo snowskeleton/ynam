@@ -2,10 +2,12 @@ from dataclasses import dataclass, asdict
 from inspect import signature as inspectSignature
 from json import dumps as dumpJson
 from json import loads as loadJson
-from typing import List, Dict
+from typing import List, Dict, Callable
 
 from requests import Response, get, patch, post, put
 # flake8: noqa
+
+from .ynam_parser import logger
 
 
 @dataclass
@@ -26,7 +28,11 @@ class YNABTransaction:
     cleared: str = 'cleared'
 
     def __post_init__(self) -> None:
-        self.payee_name = self.payee_name[:100]
+        if len(self.payee_name) >= 100:
+            shorter_name = self.payee_name[:100]
+            logger.debug(
+                f'Payee name "{self.payee_name}" too long. Shortened to "{shorter_name}')
+            self.payee_name = shorter_name
 
     def asdict(self) -> dict:
         return asdict(self)
@@ -40,8 +46,12 @@ class YNABTransaction:
 
 
 class YNABAPI():
-
     def __init__(self, api_key: str) -> None:
+        if api_key is None:
+            raise ValueError(
+                'Attempted to initialize YNAB API without API key.'
+            )
+
         self.uri = 'https://api.youneedabudget.com/v1'
         self.headers = {
             "Content-Type": "application/json",
@@ -49,24 +59,45 @@ class YNABAPI():
         }
         self.budget_id: str = None
 
-    def _patch(self, url: str, **kwargs) -> Response:
-        return patch(self.uri + url, **kwargs, headers=self.headers)
+        logger.debug(f'YNABAPI uri: {self.uri}')
+        logger.debug(f'YNABAPI headers: {self.headers}')
 
-    def _post(self, url: str, **kwargs) -> Response:
-        return post(self.uri + url, **kwargs, headers=self.headers)
+    def __call(self, call: Callable, url: str, **kwargs) -> dict:
+        longstr = [f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]
+        longstr = ' '.join(longstr)
+        msg = f'Sending {call.__name__.upper()} to endpoint {url} '
+        msg += f"using kwargs: {longstr if len(longstr) > 0 else None}"
+        logger.debug(msg)
 
-    def _put(self, url: str, **kwargs) -> Response:
-        return put(self.uri + url, **kwargs, headers=self.headers)
+        results: Response = call(self.uri + url, **kwargs, headers=self.headers)
+        jsonResults: dict = loadJson(results.content.decode('utf-8'))
+        if 'data' in jsonResults.keys():
+            logger.debug('Call successful!')
+            logger.debug(jsonResults)
+            return jsonResults['data']
+        else:
+            logger.warn(
+                f"Found error {jsonResults['error']} in response body.")
+            raise Exception(jsonResults['error'])
 
-    def _get(self, url: str, **kwargs) -> Response:
-        return get(self.uri + url, **kwargs, headers=self.headers)
+    def _patch(self, url: str, **kwargs) -> dict:
+        return self.__call(patch, url, **kwargs)
+
+    def _post(self, url: str, **kwargs) -> dict:
+        return self.__call(post, url, **kwargs)
+
+    def _put(self, url: str, **kwargs) -> dict:
+        return self.__call(put, url, **kwargs)
+
+    def _get(self, url: str, **kwargs) -> dict:
+        return self.__call(get, url, **kwargs)
 
 # User
 
     def get_user(self) -> dict:
         """Returns authenticated user information
         """
-        return _decode(self._get(f'/user')['user'])
+        return self._get(f'/user')['user']
 
 # Budgets
 
@@ -76,7 +107,7 @@ class YNABAPI():
         Returns:
           dict: budgets list with summary information
         """
-        return _decode(self._get(url='/budgets'))['budgets']
+        return self._get(url='/budgets')['budgets']
 
     def get_budget(self, budget_id: str = None) -> dict:
         """Returns a single budget with all related entities.
@@ -92,7 +123,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}'
-        return _decode(self._get(url=url))['budget']
+        return self._get(url=url)['budget']
 
     def get_budget_settings(self, budget_id: str = None) -> dict:
         """Returns a single budget with all related entities.
@@ -108,7 +139,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/settings'
-        return _decode(self._get(url=url))['settings']
+        return self._get(url=url)['settings']
 
 # Accounts
 
@@ -125,7 +156,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/accounts'
-        return _decode(self._get(url))['accounts']
+        return self._get(url)['accounts']
 
     def get_account(self, account_id: str, budget_id: str = None) -> dict:
         """Account list
@@ -141,7 +172,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/accounts/{account_id}'
-        return _decode(self._get(url))['account']
+        return self._get(url)['account']
 
     def post_account(self,
                      name: str,
@@ -169,7 +200,7 @@ class YNABAPI():
         url = f'/budgets/{budget_id}/accounts'
         json = {"account": {"name": name, "type": type, "balance": balance}}
         results = self._post(url, json=json)
-        return _decode(results)
+        return results
 
 # Categories
 
@@ -189,7 +220,7 @@ class YNABAPI():
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/categories'
         results = self._get(url=url)
-        return _decode(results)['category_groups']
+        return results['category_groups']
 
     def get_category(self, category_id: str, budget_id: str = None) -> dict:
         """Single category
@@ -205,7 +236,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/categories/{category_id}'
-        return _decode(self._get(url=url))['category']
+        return self._get(url=url)['category']
 
     def get_category_by_month(self,
                               category_id: str,
@@ -226,7 +257,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/months/{month}/categories/{category_id}'
-        return _decode(self._get(url=url))['category']
+        return self._get(url=url)['category']
 
     # this one returns a 500 error for some reason
     def patch_category_by_month(self,
@@ -250,7 +281,7 @@ class YNABAPI():
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/months/{month}/categories/{category_id}'
         data = {"category": {"budgeted": budgeted_amount}}
-        return _decode(self._patch(url=url, data=data))
+        return self._patch(url=url, data=data)
 
 # Payees
 
@@ -267,7 +298,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/payees'
-        return _decode(self._get(url=url))['payees']
+        return self._get(url=url)['payees']
 
     def get_payee(self, payee_id: str, budget_id: str = None) -> dict:
         """Single payee
@@ -283,7 +314,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/payees/{payee_id}'
-        return _decode(self._get(url=url))['payee']
+        return self._get(url=url)['payee']
 
 # Payee Locations
 
@@ -307,7 +338,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/payee_locations'
-        return _decode(self._get(url=url))['payee_locations']
+        return self._get(url=url)['payee_locations']
 
     def get_payee_location(self,
                            payee_location_id: str,
@@ -333,7 +364,7 @@ class YNABAPI():
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/payee_locations/{payee_location_id}'
         results = self._get(url=url)
-        return _decode(results)['payee_locations']
+        return results['payee_locations']
 
     def get_locations_for_payee(self,
                                 payee_id: str,
@@ -358,7 +389,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/payee_locations/{payee_id}'
-        return _decode(self._get(url=url))['payee_locations']
+        return self._get(url=url)['payee_locations']
 
 # Months
 
@@ -378,7 +409,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/months'
-        return _decode(self._get(url=url))['months']
+        return self._get(url=url)['months']
 
     def get_month(self, month: str, budget_id: str = None) -> dict:
         """Single budget month
@@ -395,7 +426,7 @@ class YNABAPI():
         """
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/months/{month}'
-        return _decode(self._get(url=url))['month']
+        return self._get(url=url)['month']
 
 # Transactions
 
@@ -425,7 +456,7 @@ class YNABAPI():
         result = self._get(url, json=data)
         return [
             YNABTransaction.from_dict(xt)
-            for xt in _decode(result)['transactions']
+            for xt in result['transactions']
         ]
 
     def get_transaction(
@@ -447,7 +478,7 @@ class YNABAPI():
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/transactions/{transaction_id}'
         results = self._get(url)
-        return _decode(results)['transaction']
+        return results['transaction']
 
     def get_account_transactions(
         self,
@@ -466,7 +497,7 @@ class YNABAPI():
         result = self._get(url, json=data)
         return [
             YNABTransaction.from_dict(xt)
-            for xt in _decode(result)['transactions']
+            for xt in result['transactions']
         ]
 
     def get_category_transactions(
@@ -486,7 +517,7 @@ class YNABAPI():
         result = self._get(url, json=data)
         return [
             YNABTransaction.from_dict(xt)
-            for xt in _decode(result)['transactions']
+            for xt in result['transactions']
         ]
 
     def get_payee_transactions(
@@ -506,7 +537,7 @@ class YNABAPI():
         result = self._get(url, json=data)
         return [
             YNABTransaction.from_dict(xt)
-            for xt in _decode(result)['transactions']
+            for xt in result['transactions']
         ]
 
     def put_transaction(
@@ -531,7 +562,7 @@ class YNABAPI():
         url = f'/budgets/{budget_id}/transactions/{transaction_id}'
         data = {"transaction": updated_transaction}
         results = self._put(url, json=data)
-        return _decode(results)
+        return results
 
     def post_transactions(
         self,
@@ -551,7 +582,7 @@ class YNABAPI():
         url = f'/budgets/{budget_id}/transactions'
         data = {"transactions": transactions}
         results = self._post(url, json=data)
-        return _decode(results)
+        return results
 
     def post_import_transactions(
         self,
@@ -567,7 +598,7 @@ class YNABAPI():
         url = f'/budgets/{budget_id}/transactions/import'
         json = {"transactions": transactions}
         results = self._post(url, json=json)
-        return _decode(results)
+        return results
 
     def patch_transactions(
         self,
@@ -586,7 +617,7 @@ class YNABAPI():
         url = f'/budgets/{budget_id}/transactions'
         json = {"transactions": transactions}
         results = self._patch(url, json=json)
-        return _decode(results)
+        return results
 
     def print_transactions(
         self,
@@ -604,7 +635,7 @@ class YNABAPI():
         }
         result = self._get(url, json=data)
         print(
-            dumpJson(([xt for xt in _decode(result)['transactions']]),
+            dumpJson(([xt for xt in result['transactions']]),
                      indent=2))
 
     def get_scheduled_transactions(
@@ -624,7 +655,7 @@ class YNABAPI():
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/scheduled_transactions'
         results = self._get(url)
-        return _decode(results)['scheduled_transactions']
+        return results['scheduled_transactions']
 
     def get_scheduled_transaction(
         self,
@@ -645,14 +676,7 @@ class YNABAPI():
         budget_id = _oneOf(budget_id, self.budget_id)
         url = f'/budgets/{budget_id}/scheduled_transactions/{scheduled_transaction_id}'
         results = self._get(url)
-        return _decode(results)['scheduled_transaction']
-
-
-def _decode(httpResponse: Response) -> dict:
-    answer: dict = loadJson(httpResponse.content.decode('utf-8'))
-    if 'data' in answer.keys():
-        return answer['data']
-    raise Exception(answer['error'])
+        return results['scheduled_transaction']
 
 
 def _oneOf(this, that):
@@ -678,3 +702,7 @@ _account_types = [
 
 class InvalidAccountType(Exception):
     pass
+
+
+def __stringify(**kwargs) -> list:
+    return [f'\nkey: {k},\n value: {v}' for k, v in kwargs.items()]

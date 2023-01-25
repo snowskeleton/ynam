@@ -1,6 +1,6 @@
 secrets.json
 .venv*
-chromedriver
+*chromedriver*
 __pycache__
 .idea/
 .vscode
