@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from mintapi import RESTClient, SeleniumBrowser
 
 from .ynam_parser import arg
-from .ynam_secrets import stash
+from .ynam_secrets import get_stash
 from .ynab_api import YNABTransaction
 
 
@@ -29,7 +29,7 @@ class MintTransaction:
             **{
                 "date": self.date,
                 "amount": int(self.amount * 1000),
-                "account_id": stash.ynab_account_id,
+                "account_id": get_stash().ynab_account_id,
                 "payee_name": self.inferredDescription,
                 "import_id": self.id,
             })
@@ -62,6 +62,7 @@ class MintAPI():
             return ast.literal_eval(file.read())['authorization']
 
     def updateAuth(self):
+        stash = get_stash()
         bowser = self.browser(
             email=stash.mint_username,
             password=stash.mint_password,

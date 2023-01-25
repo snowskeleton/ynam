@@ -18,9 +18,9 @@ class Secrets():
     mint_mfa_seed: str = None
 
 
-def loadSecrets():
+def _loadSecrets():
     fileSecrets = {}
-    path = arg('config_file')
+    path = arg('secrets_file')
     if os.path.exists(path):
         with open(path) as file:
             try:
@@ -39,7 +39,11 @@ def loadSecrets():
 
 
 def updateStash(key, value):
-    secrets = {**loadSecrets()}
+    secrets = {**_loadSecrets()}
+    logger.debug(
+        'Secrets prior to update:\n'
+        f'{secrets}'
+    )
     if value == '':
         logger.info(
             f'Empty value for key: {key}. Maintaining current value: {secrets[key]}')  # noqa
@@ -47,9 +51,15 @@ def updateStash(key, value):
 
     logger.debug(f'Updating key: {key} to value: {value}')
     secrets[key] = value
-    with open(arg('config_file'), 'w+') as file:
+    with open(arg('secrets_file'), 'w+') as file:
         logger.debug('Persisting to disk...')
         file.write(json.dumps(secrets, indent=2))
+    secrets = {**_loadSecrets()}
+    logger.debug(
+        'Secrets after update:\n'
+        f'{secrets}'
+    )
 
 
-stash = Secrets(**loadSecrets())
+def get_stash():
+    return Secrets(**_loadSecrets())
