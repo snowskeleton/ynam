@@ -102,19 +102,7 @@ add('--quickstart',
     '-q',
     dest='quickstart',
     action='store_true',
-    help='A required integer positional argument')
-add('--session-file',
-    '-s',
-    dest='session_file',
-    action='store',
-    default=path('.ynam_mintapi_session'),
-    type=argparse.FileType('r+'),
-    help='Custom file path to chromium session')
-add('--username',
-    dest='mint_username',
-    action='store',
-    default=None,
-    help='Mint username')
+    help='Enter credentials and select default budget/card')
 add('--update-mint-auth',
     dest='update_auth',
     action='store_true',
