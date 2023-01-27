@@ -1,9 +1,3 @@
-# Note
-The current version of mintapi/mintapi available from pypi is not compatible with this version of ynam.
-Install manually from [snowskeleton/mintapi](https://github.com/snowskeleton/mintapi).
-Clone, navigate inside, and run `pip install --upgrade .`
-
-
 # Abstract
 ynam is a commandline utility
 to import transactions from an Apple Card into YNAB.
