@@ -24,9 +24,7 @@ pip install ynam
 ```
 Or directly from github
 ```
-git clone https://github.com/snowskeleton/ynam.git
-cd ynam
-pip install .
+pip install git+https://github.com/snowskeleton/ynam
 ```
 Go through the quickstart process
 ```
@@ -40,38 +38,27 @@ YNAB account...
 ```
 ynam will login to YNAB and have you select from among the budgets and accounts listed
 
-To test it out, simple run
+To test it out, simply run
 ```
 ynam
 ```
-The first run can take up to a minute to complete. <!-- (more on that [here]()) -->
+The first run can take up to a minute to complete.
+Run with `-x` to see what's happening! <!-- (more on that [here]()) -->
 ## Docker 
-To run ynam in docker, you'll need to do a bit of setup.
+First complete the `--quickstart` process,
+passing ynam's config directory as a volume mount.
+```
+docker run -v "$HOME/.ynam:/root/.ynam" -it snowskeleton/ynam --quickstart
+```
+Subsequent runs should use:
+```
+docker run -v "$HOME/.ynam:/root/.ynam" -it -d snowskeleton/ynam
+```
+Note the inclusion of `-d`,
+which runs the image in detached mode.
 
-First,
-after running through the instructions above once,
-ynam will have created `.ynamrc` in your home directory.
-This is one of the files you need to link to the docker container.
-
-You also need to create three empty files,
-one each for api keys, cookies, and session.
-Here, we'll create those files in our home directory
-
-```
-touch ~/.ynam_mint_cookies
-touch ~/.ynam_mint_api_key
-touch ~/.ynam_mint_session
-```
-then we can
-```
-docker run \
-    -v "$HOME/.ynam_mint_cookies:/root/.ynam_mint_cookies" \
-    -v "$HOME/.ynam_mint_api_key:/root/.ynam_mint_api_key" \
-    -v "$HOME/.ynam_mint_session:/root/.ynam_mint_session" \
-    -v "$HOME/.ynamrc:/root/.ynamrc" \
-    -it \
-    snowskeleton/ynam
-```
+Run with your preferred scheduler.
+I use cron.
 # Considerations
 - Mint
    - YNAM expects there to only be one account linked in Mint,
