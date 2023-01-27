@@ -14,6 +14,11 @@ RUN echo "**** install packages ****" && \
     /var/tmp/*
 
 
+# uncomment to improve cached build times. useful for rapid development
+# FROM b1 as b2
+# RUN sudo pip3 install -e git+https://github.com/snowskeleton/mintapi#egg=mintapi
+
+# FROM b2
 FROM b1
 COPY . ./ynam/
 RUN cd ynam && sudo pip3 install .
