@@ -16,8 +16,8 @@ signal.signal(signal.SIGINT, signal_handler)
 
 
 def main():
-    validate_files()
     handleArgs()
+    validate_files()
 
     mint_api = MintAPI()
     try:
@@ -66,8 +66,13 @@ def handleArgs():
 def validate_files():
     from .ynam_parser import migrate_v0_3_4_0
     migrate_v0_3_4_0()
+
+    secrets = arg('secrets_file')
+    if not os.path.exists(secrets):
+        raise FileNotFoundError(
+            f"Missing {secrets}. Create it with `ynam --quickstart`")
+
     files = [
-        arg('secrets_file'),
         arg('mint_api_key_file'),
         arg('mint_cookies'),
         arg('chromedriver'),
@@ -80,14 +85,6 @@ def validate_files():
                 f'{file} does not exist; created empty file in its place.')
             with open(file, 'w'):
                 pass
-
-        if os.path.isdir(file):
-            raise IsADirectoryError(
-                f"""
-                Found an unexpected directory at {file}
-                help: create an empty file in its place.
-                """
-            )
 
 
 if __name__ == "__main__":
