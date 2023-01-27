@@ -41,6 +41,10 @@ def _loadSecrets() -> dict:
 
 def updateStash(key, value) -> None:
     secrets = {**_loadSecrets()}
+
+    if key not in secrets.keys():
+        secrets[key] = value
+
     logger.debug(
         'Secrets prior to update:\n'
         f'{secrets}'
