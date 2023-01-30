@@ -4,7 +4,8 @@ on:
   schedule:
     - cron: '31 11 * * *'
   push:
-    branches: [ "main" ]
+    branches: [ "ghstuff" ]
+    # branches: [ "main" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
@@ -36,5 +37,6 @@ jobs:
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: snowskeleton/ynam:latest
+          platform: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
