@@ -2,7 +2,7 @@ FROM selenium/standalone-chrome as b1
 
 ENV PATH=$HOME/.local/bin:$PATH
 
-RUN apt-get install qemu qemu-user-static binfmt-support debootstrap -y
+RUN docker run --privileged --rm tonistiigi/binfmt --install all
 RUN echo "**** install packages ****" && \
     sudo apt-get update && \
     sudo apt-get install -y python3-pip git && \
