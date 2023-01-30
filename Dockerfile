@@ -2,7 +2,6 @@ FROM selenium/standalone-chrome as b1
 
 ENV PATH=$HOME/.local/bin:$PATH
 
-RUN docker run --privileged --rm tonistiigi/binfmt --install all
 RUN echo "**** install packages ****" && \
     sudo apt-get update && \
     sudo apt-get install -y python3-pip git && \
