@@ -28,8 +28,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PERSONAL_ACCESS_TOKEN }}
       -
-        # Add support for more platforms with QEMU (optional)
-        # https://github.com/docker/setup-qemu-action
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       -
