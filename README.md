@@ -17,7 +17,7 @@ and unlinked credit account
 - (Recommended) Docker 
 - (Recommended) MFA soft token
 # Usage
-## Python/Chrome
+## Python/Selenium
 Install from PyPi
 ```
 pip install ynam
