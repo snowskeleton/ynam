@@ -61,30 +61,35 @@ Run with your preferred scheduler.
 I use cron.
 # Considerations
 - Mint
-   - YNAM expects there to only be one account linked in Mint,
-   namely your Apple Card.
-   If you add additional cards, ynam will post them to YNAB
-   all under your Apple Card.
-   - Strictly speaking, MFA is not mandatory.
+   - ynam expects that you will have one card,
+   and only one card,
+   linked to Mint.
+   ynam does not differentiate between different cards,
+   and thus assumes that all transactions present are for the same card.
+
+   - [Enable MFA for your Intuit account](https://accounts.intuit.com/app/account-manager/security/mfa).
+   The simplest and least fragiile method is a software token,
+   which you should backup in an app like
+   [Authy](https://apps.apple.com/us/app/twilio-authy/id494168017).
+   When linking an app,
+   you will have the option to view the secret as text instead of as a QR code.
+   Run `ynam --quickstart` and paste that text when prompted for mfa seed.
+   Automated login with SMS and/or email MFA is not supported by ynam.
+   Strictly speaking,
+   MFA is not mandatory.
    With that said,
-   a number of potential issues can be avoided entirely if you use MFA.
-   The simplest method is a software token, from somewhere like
-   [Authy](https://apps.apple.com/us/app/twilio-authy/id494168017),
-   Any app will do, as long as it lets you export the seed,
-   which you then pass to ynam.
-   - The link between Mint and your Apple Card will break every ~90 days,
-   and you'll have to manually sign in and relink it.
+   enabling MFA prevents entire categories of automation issues,
+   and is thus strongly recommended.
+
+   - Mint's link to your Apple Card will break every ~90 days.
+   You must manually sign in to Mint and relink it.
 
 - Chrome
-   - Chrome and chromedriver versions have to match.
-   By default, ynam always pulls the most up to date chromedriver.
-   If your Chrome install is not also up to date,
-   logging into Mint will fail.
-   For long term deployment,
-   you should use the `--use-chromedriver-on-path`
-   with a validated chromedriver.
-   Alternatively, Docker can handle everything for you.
-   This is the recommeneded method.
+   - Chrome and chromedriver versions must match.
+   Docker will handel this process automatically,
+   but simpler deployments not using Docker must match versions manually.
+   Use `--use-chromedriver-on-path` to pass in a working chromedriver,
+   and ensure Chrome does not auto update.
 
 # Importing Transactions
 Avoid manually entering your Apple Card transations
