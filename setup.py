@@ -29,6 +29,5 @@ setup(name=read_from_file("__title__"),
       long_description_content_type="text/markdown",
       packages=["ynam"],
       install_requires=[
-          "mintapi",
-      ],
+          'mintapi@git+http://github.com/snowskeleton/mintapi'],
       entry_points={"console_scripts": ["ynam = ynam.main:main"]})
