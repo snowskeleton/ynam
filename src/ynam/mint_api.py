@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from mintapi import RESTClient, SeleniumBrowser
 
 from .ynam_parser import arg
+from .ynam_parser import logger
 from .ynam_secrets import get_stash
 from .ynab_api import YNABTransaction
 
@@ -47,6 +48,10 @@ class MintAPI():
         client = self.restClient()
         client.authorize(self.cookies(), self.key())
         items = client.get_transaction_data()
+
+        logger.info(f"Found {len(items)} transactions in Mint.")
+        [logger.debug(item['fiData']) for item in items]
+
         items = [
             MintTransaction.from_dict(item['fiData']) for item in items
         ]
