@@ -21,6 +21,7 @@ class Secrets():
 def _loadSecrets() -> dict:
     fileSecrets = {}
     path = arg('secrets_file')
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     if os.path.exists(path):
         with open(path) as file:
             try:
