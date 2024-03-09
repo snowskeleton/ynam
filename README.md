@@ -4,10 +4,14 @@ to import transactions from an Apple Card into YNAB.
 ynam achieves this by using an intermediary,
 namely Intuit's Mint,
 who happens to be able to import Apple Card transactions.
-For some reason,
+~~For some reason,
 this is easier than simply linking an Apple Card directly to YNAB.
 If you're a developer from either one of these companies,
-please make this project obsolete.
+please make this project obsolete.~~
+The wait is finally over!
+YNAB now natively supports Apple Wallet accoutns, including Apple Card, Apple Cash, and Apple Savings!
+See full details here
+https://www.ynab.com/blog/ynab-apple-wallet
 
 # Prerequisites
 - New Intuit's [Mint](https://accounts.intuit.com/signup.html) account.
